@@ -12,7 +12,6 @@ def test_reverse_poly():
     assert bit_reverse_n(CRC32_POLY, 32) == 0xEDB88320
 
 
-@pytest.mark.skip()
 def test_crc32_base():
     assert crc32(b'123456789') == 0xCBF43926
     assert crc32(b'A') == 0xD3D99E8B
