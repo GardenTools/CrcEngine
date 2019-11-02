@@ -1,8 +1,27 @@
+#!/usr/bin/env python
+
+# This file is part of crcpylib.
+#
+# crcpylib is free software: you can redistribute it an d /or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# crcpylib is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with crcpylib.  If not, see <https://www.gnu.org/licenses/>.
 
 # Table of bit-reversed bits for fast bit reversal, initialised on loading
 _REV8BITS = None
 
+MAX_UINT8 = 255
+MAX_UINT16 = ((1<<16) - 1)
 MAX_UINT32 = ((1<<32) - 1)
+
 CRC32_POLY = 0x04C11DB7
 
 
@@ -195,4 +214,3 @@ _init_bit8rev_table()
 
 crc32 = Crc(name='CRC32', poly=CRC32_POLY, seed=MAX_UINT32, xor_out=MAX_UINT32,
             width=32, ref_in=True, ref_out=True)
-
