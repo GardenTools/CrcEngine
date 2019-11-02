@@ -8,7 +8,5 @@ python:
 install:
   - pip install -r requirements.txt
 
-jobs:
-  include:
-    - stage: "tests"
-        script: pytest
+script:
+  pytest
