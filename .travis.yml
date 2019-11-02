@@ -1,2 +1,5 @@
-# command to run tests
+# Travis configuration file
+before_install:
+  - sudo pip3 install -r requirements.txt
+
 script: pytest
