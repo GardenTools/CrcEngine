@@ -17,16 +17,71 @@ A python library for CRC calculation
 # You should have received a copy of the GNU General Public License
 # along with crcpylib.  If not, see <https://www.gnu.org/licenses/>.
 
-UINT8_MAX = 255
-UINT16_MAX = ((1 << 16) - 1)
-UINT32_MAX = ((1 << 32) - 1)
+U8_MAX = 255
+U16_MAX = ((1 << 16) - 1)
+U32_MAX = ((1 << 32) - 1)
+# Some of these polynomials are used for many algorithms, so they are collected
+# here
+_CRC16_CCITT_POLY = 0x1021
+_CRC32_POLY = 0x04C11DB7
+
+_FIELDS = ('poly', 'width', 'seed', 'ref_in', 'ref_out', 'xor_out', 'check')
+
+_ALGORITHMS = {
+    # =========================  8-bit ========================================
+    'crc8': (0xD5, 8, 0, False, False, 0, 0xbc),
+    'crc8-autosar': (0x2f, 8, U8_MAX, False, False, U8_MAX, 0xdf),
+    'crc8-bluetooth': (0xa7, 8, 0, True, True, 0, 0x26),
+    # ITU I.432.1 https://www.itu.int/rec/T-REC-I.432.1-199902-I/en
+    'crc8-ccitt': (0x07, 8, 0, False, False, 0x55, 0xa1),
+    # https://www.etsi.org/deliver/etsi_ts/100900_100999/100909/08.09.00_60/ts_100909v080900p.pdf
+    'crc8-gsm-b': (0x49, 8, 0, False, False, U8_MAX, 0x94),
+    'crc8-sae-j1850': (0x1d, 8, U8_MAX, False, False, U8_MAX, 0x4b),
+    # ========================= 15-bit ========================================
+    'crc15-can': (0x4599, 15, 0, False, False, 0, 0x059e),
+    # ========================= 16-bit ========================================
+    # From  KERMIT PROTOCOL MANUAL Sixth Edition 1986 Three-character 16-bit
+    # CRC-CCITT. The CRC calculation treats  the  data  it operates  upon  as
+    # a  string  of  bits with the low order bit of the first character first
+    # and the high order bit of the last character last.  The initial value of
+    # the CRC is taken as 0; the 16-bit CRC is the remainder after 16  12  5
+    # dividing the data bit string by the polynomial X  +X  +X +1 (this
+    # calculation  can  actually  be  done  a  character at a time, using a
+    # simple table lookup algorithm).
+    # http://www.columbia.edu/kermit/ftp/e/kproto.doc
+    # The Kermit protocol describes the algorithm applied to bits down the wire
+    # and UARTs transmit least-significant-bit first
+    'crc16-kermit': (_CRC16_CCITT_POLY, 16, 0, True, True, 0, 0x2189),
+    'crc16-ccitt-true': (_CRC16_CCITT_POLY, 16, 0, True, True, 0, 0x2189),
+    # https://www.itu.int/rec/T-REC-V.41/en
+    'crc16-xmodem': (_CRC16_CCITT_POLY, 16, 0, False, False, 0, 0x31c3),
+    # AKA CRC16-CCITT-FALSE
+    # Reference https://www.autosar.org/fileadmin/Releases_TEMP/Classic_Platform_4.4.0/Libraries.zip
+    'crc16-autosar': (_CRC16_CCITT_POLY, 16, U16_MAX, False, False, 0, 0x29b1),
+    #  crc16-ccitt-false is an alias of crc16-autosar
+    'crc16-ccitt-false': (_CRC16_CCITT_POLY, 16, U16_MAX, False, False, 0, 0x29b1),
+    'crc16-cdma2000': (0xC867, 16, U16_MAX, False, False, 0, 0x4c06),
+    # Algorithms normally called "CRC16"
+    'crc16-ibm': (0x8005, 16, 0, True, True, 0, 0xbb3d),
+    'crc16-modbus': (0x8005, 16, U16_MAX, True, True, 0, 0x4b37),
+    'crc16-profibus': (0x1dcf, 16, U16_MAX, False, False, U16_MAX, 0xa819),
+    # ========================= 24-bit ========================================
+    'crc24-flexray16-a': (0x5d6dcb, 24, 0xfedcba, False, False, 0, 0x7979bd),
+    'crc24-flexray16-b': (0x5d6dcb, 24, 0xabcdef, False, False, 0, 0x1f23b8),
+    # ========================= 32-bit ========================================
+    # Ethernet CRC32
+    # https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-130.pdf
+    'crc32': (_CRC32_POLY, 32, U32_MAX, True, True, U32_MAX, 0xCBF43926),
+    # CRC32 as implemented in BZIP, same polynomial but no reflection
+    'crc32-bzip2': (_CRC32_POLY, 32, U32_MAX, False, False, U32_MAX, 0xfc891918),
+    # Castagnoli CRC used in iSCSi SSE4, ext4
+    'crc32-c': (0x1edc6f41, 32, U32_MAX, True, True, U32_MAX, 0xe3069283),
+    # ========================= 64-bit ========================================
+    'crc64-ecma': (0x42F0E1EBA9EA3693, 64, 0, False, False, 0, 0x6c40df5f0b497347),
+}
 
 
-CRC16_CCITT_POLY = 0x1021
-CRC32_POLY = 0x04C11DB7
-
-
-class CrcLsbf:
+class _CrcLsbf:
     """Least-significant-bit first calculation of a CRC. Implies a ref_in
     calculations was specified with new data being shifted in from the MSB end
      of the calculation register"""
@@ -52,7 +107,7 @@ class CrcLsbf:
                    self._table[(crc & 0xFF) ^ byte])
             crc &= self._result_mask
         if self._reverse_result:
-            # This is a weird corner case where the output is reflected bu the
+            # This is a weird corner case where the output is reflected but the
             # input isn't
             crc = bit_reverse_n(crc, self._width)
         return crc ^ self._xor_out
@@ -62,7 +117,7 @@ class CrcLsbf:
         return self.calculate(data)
 
 
-class CrcMsbf:
+class _CrcMsbf:
     """Most-significant-bit-first table-driven CRC calculation"""
     def __init__(self, table, width, seed, xor_out=0, reverse_result=False,
                  name=''):
@@ -94,7 +149,7 @@ class CrcMsbf:
         return self.calculate(data)
 
 
-class CrcGeneric:
+class _CrcGeneric:
     """Generic most-significant-bit-first table-driven CRC calculation"""
     def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0,
                  name=''):
@@ -139,14 +194,13 @@ class CrcGeneric:
         return self.calculate(data)
 
 
-class CrcGenericLsbf:
+class _CrcGenericLsbf:
     """
     General purpose CRC calculation using LSB algorithm. Mainly here for
      reference, since the other algorithms cover all useful calculation
       combinations
     """
-    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0,
-                 name=''):
+    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=''):
         self._poly = poly
         self._width = width
         self._seed = seed
@@ -188,26 +242,53 @@ class CrcGenericLsbf:
         return crc ^ self._xor_out
 
     def __call__(self, data):
+        """Calculate CRC for data"""
         return self.calculate(data)
 
 
 class CrcEngine:
     """Factory for creating CRC calculators"""
     @classmethod
+    def new(cls, name):
+        """Create a new CRC calculation instance"""
+        params = cls.get_algorithm_params(name.lower())
+        # the check field is not part of the definition, remove it before
+        # creating the algorithm
+        del params['check']
+        return cls.create(**params)
+
+    @classmethod
+    def get_algorithm_params(cls, name):
+        """ Obtain the parameters for a named CRC algorithm
+
+        :param name: Name of algorithm (lowercase)
+        :return: dict of algorithm parameters
+        """
+        raw_params = _ALGORITHMS[name]
+        param_dict = dict(zip(_FIELDS, raw_params))
+        param_dict['name'] = name
+        return param_dict
+
+    @classmethod
+    def algorithms_available(cls):
+        """Obtain a list of available named CRC algorithms"""
+        return _ALGORITHMS.keys()
+
+    @classmethod
     def create(cls, poly, width, seed, ref_in=True, ref_out=True, name='',
                xor_out=0xFFFFFF):
         """Create a table-driven CRC calculation engine"""
         if ref_in:
             table = cls.create_lsb_table(poly, width)
-            algorithm = CrcLsbf(table, width, seed,
-                                reverse_result=(ref_in != ref_out),
-                                xor_out=xor_out,
-                                name=name)
+            algorithm = _CrcLsbf(table, width, seed,
+                                 reverse_result=(ref_in != ref_out),
+                                 xor_out=xor_out,
+                                 name=name)
         else:
             table = cls.create_msb_table(poly, width)
-            algorithm = CrcMsbf(table, width, seed,
-                                reverse_result=ref_out,
-                                xor_out=xor_out, name=name)
+            algorithm = _CrcMsbf(table, width, seed,
+                                 reverse_result=ref_out,
+                                 xor_out=xor_out, name=name)
         return algorithm
 
     @classmethod
@@ -224,8 +305,8 @@ class CrcEngine:
         :param xor_out: pattern to XOR into result
         :return: A CRC calculation engine
         """
-        return CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
-                          xor_out=xor_out, name=name)
+        return _CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
+                           xor_out=xor_out, name=name)
 
     @classmethod
     def create_generic_lsbf(cls, poly, width, seed, ref_in=True, ref_out=True,
@@ -233,8 +314,8 @@ class CrcEngine:
         """Create a CRC calculation engine that uses the Least-significant first
         algorithm, but does not reflect the polynomial. If you use this, reflect
         the polynomial before passing it in"""
-        return CrcGenericLsbf(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
-                              xor_out=xor_out, name=name)
+        return _CrcGenericLsbf(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
+                               xor_out=xor_out, name=name)
 
     @classmethod
     def create_msb_table_individual(cls, poly, width):
@@ -312,12 +393,11 @@ class CrcEngine:
         # '1' is a reflected 128
         i = 0x80
         poly = bit_reverse_n(poly, width)
-        more = True
         # On iteration we compute index positions 128, 64, 32 ...
         # this can be done with a single application of the polynomial bit test
         # since we know only one bit is set. We re-use the value of index 2n to
         # calculate n
-        while more:
+        while i > 0:
             # Apply the test for lsb set and the (reflected) polynomial
             # to bits shifting in from the left
             # so the first tests 0x80 >> 7, the second iteration re-uses this to
@@ -334,12 +414,11 @@ class CrcEngine:
             for j in range(0, 256, 2 * i):
                 table[i + j] = crc ^ table[j]
             i >>= 1
-            more = i > 0
         return table
 
 
 def bit_reverse_byte(byte):
-    """Noddy bit reversal of a byte"""
+    """Bit-bashing reversal of a byte"""
     result = 0
     for i in range(8):
         if byte & (1 << i):
@@ -368,38 +447,3 @@ def bit_reverse_n(value, num_bits):
 
 # Table of bit-reversed bits for fast bit reversal, initialised on loading
 _REV8BITS = [bit_reverse_byte(n) for n in range(256)]
-
-# Ethernet CRC32
-CRC32 = CrcEngine.create(poly=CRC32_POLY, width=32, seed=UINT32_MAX,
-                         ref_in=True, ref_out=True, xor_out=UINT32_MAX,
-                         name='CRC32')
-
-# BZIP2 CRC32 - like the Ethernet CRC32 but no bit reversal
-CRC32_BZIP2 = CrcEngine.create(poly=CRC32_POLY, width=32, seed=UINT32_MAX,
-                               ref_in=False, ref_out=False, xor_out=UINT32_MAX,
-                               name='CRC32-BZIP2')
-
-# From  KERMIT PROTOCOL MANUAL Sixth Edition 1986
-# Three-character 16-bit CRC-CCITT. The CRC calculation treats  the  data  it
-# operates  upon  as  a  string  of  bits with the low order bit of the first
-# character first and the high order bit of the last character last.  The in-
-# itial value of the CRC is taken as 0; the 16-bit CRC is the remainder after
-#                                                  16  12  5
-# dividing the data bit string by the polynomial X  +X  +X +1 (this  calcula-
-# tion  can  actually  be  done  a  character at a time, using a simple table
-# lookup algorithm).
-# http://www.columbia.edu/kermit/ftp/e/kproto.doc
-CRC16_KERMIT = CrcEngine.create(name='CRC16-KERMIT', poly=CRC16_CCITT_POLY,
-                                width=16, seed=0, ref_in=True, ref_out=True,
-                                xor_out=0)
-# XMODEM CRC, see ITU-T V.41 Code-Independent Error-Control System 1988, 1993
-# https://www.itu.int/rec/T-REC-V.41/en
-CRC16_XMODEM = CrcEngine.create(name='CRC16-XMODEM', poly=CRC16_CCITT_POLY,
-                                width=16, seed=0, ref_in=False, ref_out=False,
-                                xor_out=0)
-
-# AKA CRC16-CCITT-FALSE
-# Reference https://www.autosar.org/fileadmin/Releases_TEMP/Classic_Platform_4.4.0/Libraries.zip
-CRC16_AUTOSAR = CrcEngine.create(name='CRC16-AUTOSAR', poly=CRC16_CCITT_POLY,
-                                 width=16, seed=UINT16_MAX, ref_in=False,
-                                 ref_out=False, xor_out=0)
