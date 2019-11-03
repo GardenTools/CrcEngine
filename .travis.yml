@@ -10,3 +10,8 @@ install:
 
 script:
   pytest
+
+jobs:
+  include:
+    -stage: pylint
+    script: pylint crcpylib.py
