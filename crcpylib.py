@@ -41,6 +41,11 @@ class CrcLsbf:
         self.name = name
 
     def calculate(self, data):
+        """ Perform CRC calculation on data
+
+        :param data: a string of bytes
+        :return: integer calculated CRC
+        """
         crc = self._seed
         for byte in data:
             crc = ((crc >> 8) ^
@@ -53,6 +58,7 @@ class CrcLsbf:
         return crc ^ self._xor_out
 
     def __call__(self, data):
+        """calculate CRC"""
         return self.calculate(data)
 
 
@@ -70,6 +76,11 @@ class CrcMsbf:
         self.name = name
 
     def calculate(self, data):
+        """ Calculate a CRC on data
+
+        :param data: bytes string
+        :return: calculated CRC
+        """
         remainder = self._seed
         for value in data:
             remainder = ((remainder << 8) ^
@@ -99,6 +110,12 @@ class CrcGeneric:
         self.name = name
 
     def calculate(self, data, seed=None):
+        """ Calculate CRC of data
+
+        :param data: byte string
+        :param seed: optional seed value
+        :return: calculated CRC
+        """
         if seed:
             crc = seed
         else:
@@ -142,6 +159,12 @@ class CrcGenericLsbf:
         self.name = name
 
     def calculate(self, data, seed=None):
+        """ Calculate a CRC on data
+
+        :param data: bytes string whose CRC will be calculated
+        :param seed: Optional seed
+        :return: calculated CRC
+        """
         if seed:
             crc = seed
         else:
@@ -163,6 +186,9 @@ class CrcGenericLsbf:
         if self._ref_out:
             crc = bit_reverse_n(crc, self._width)
         return crc ^ self._xor_out
+
+    def __call__(self, data):
+        return self.calculate(data)
 
 
 class CrcEngine:
@@ -187,6 +213,17 @@ class CrcEngine:
     @classmethod
     def create_generic(cls, poly, width, seed, ref_in=True, ref_out=True,
                        name='', xor_out=0xFFFFFF):
+        """ Create generic non-table-driven CRC calculator
+
+        :param poly: Polynomial
+        :param width: calculator width in bits e.g. 32
+        :param seed: calculation seed value
+        :param ref_in: reflect incoming bits
+        :param ref_out: reflect result bits
+        :param name: name to assign to calculator
+        :param xor_out: pattern to XOR into result
+        :return: A CRC calculation engine
+        """
         return CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
                           xor_out=xor_out, name=name)
 

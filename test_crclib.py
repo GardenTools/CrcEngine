@@ -1,5 +1,4 @@
 import struct
-import pytest
 from crcpylib import *
 
 
@@ -24,9 +23,8 @@ def test_crc32_generic():
 def test_crc32_generic_lsb():
     poly = bit_reverse_n(CRC32_POLY, 32)
     assert poly == 0xEDB88320
-    crc32_generic = CrcEngine.create_generic_lsbf(poly, 32, UINT32_MAX,
-                                             ref_in=False, ref_out=False,
-                                             xor_out=UINT32_MAX)
+    crc32_generic = CrcEngine.create_generic_lsbf(
+        poly, 32, UINT32_MAX, ref_in=False, ref_out=False, xor_out=UINT32_MAX)
     assert crc32_generic.calculate(b'A') == 0xD3D99E8B
     assert crc32_generic.calculate(b'123456789') == 0xCBF43926
 
@@ -85,15 +83,16 @@ def test_crc32_bzip2():
     assert CRC32_BZIP2(b'A') == 0x81B02D8B
     assert CRC32_BZIP2(b'123456789') == 0xFC891918
 
+
 def test_tables_crosscheck():
     table1 = CrcEngine.create_msb_table_individual(CRC32_POLY, 32)
     table2 = CrcEngine.create_msb_table(CRC32_POLY, 32)
-    for n, (v1, v2) in enumerate(zip(table1, table2)):
-        assert v1 == v2, 'Mismatch for entry {}'.format(n)
+    for n, (val1, val2) in enumerate(zip(table1, table2)):
+        assert val1 == val2, 'Mismatch for entry {}'.format(n)
 
 
 def test_crc16_kermit():
-    CRC16_KERMIT(b'123456789') == 0x2189
+    assert CRC16_KERMIT(b'123456789') == 0x2189
     # confirm that this does behave as a CRC should this is an LSB-first CRC
     # The CRC value needs to be packed as little endian
     data = b'123456789' + struct.pack('<H', 0x2189)
@@ -101,7 +100,7 @@ def test_crc16_kermit():
 
 
 def test_crc16_xmodem():
-    CRC16_XMODEM(b'123456789') == 0x31c3
+    assert CRC16_XMODEM(b'123456789') == 0x31c3
     # confirm that this does behave as a CRC should, the CRC value needs to
     # be packed as big-endian
     data = b'123456789' + struct.pack('>H', 0x31c3)
@@ -109,7 +108,7 @@ def test_crc16_xmodem():
 
 
 def test_crc16_lsb_autosar():
-    CRC16_AUTOSAR(b'123456789') == 0x29B1
+    assert CRC16_AUTOSAR(b'123456789') == 0x29B1
     # confirm that this does behave as a CRC should this is an LSB-first CRC
     # The CRC value needs to be packed as little endian
     data = b'123456789' + struct.pack('>H', 0x29B1)
@@ -118,10 +117,10 @@ def test_crc16_lsb_autosar():
 
 def test_crc16_autosar_results():
     # Reference values from AUTOSAR_SWS_CRCLibrary.pdf 4.4
-    CRC16_AUTOSAR(b'\x00\x00\x00\x00') == 0x84C0
-    CRC16_AUTOSAR(b'\xF2\x01\x82') == 0xC2E1
-    CRC16_AUTOSAR(b'\x0F\xAA\x00\x55') == 0x2023
-    CRC16_AUTOSAR(b'\x00\xFF\x55\x11') == 0xB8F9
-    CRC16_AUTOSAR(b'3"U\xAA\xBB\xCC\xDD\xEE\xFF') == 0xF53F
-    CRC16_AUTOSAR(b'\x92\x6B\x55') == 0x0745
-    CRC16_AUTOSAR(b'\xFF\xFF\xFF\xFF') == 0x1D0F
+    assert CRC16_AUTOSAR(b'\x00\x00\x00\x00') == 0x84C0
+    assert CRC16_AUTOSAR(b'\xF2\x01\x83') == 0xD374
+    assert CRC16_AUTOSAR(b'\x0F\xAA\x00\x55') == 0x2023
+    assert CRC16_AUTOSAR(b'\x00\xFF\x55\x11') == 0xB8F9
+    assert CRC16_AUTOSAR(b'3"U\xAA\xBB\xCC\xDD\xEE\xFF') == 0xF53F
+    assert CRC16_AUTOSAR(b'\x92\x6B\x55') == 0x0745
+    assert CRC16_AUTOSAR(b'\xFF\xFF\xFF\xFF') == 0x1D0F
