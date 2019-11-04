@@ -2,20 +2,20 @@
 """
 A python library for CRC calculation
 """
-# This file is part of crcpylib.
+# This file is part of crcengine.
 #
-# crcpylib is free software: you can redistribute it an d /or modify
+# crcengine is free software: you can redistribute it an d /or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# crcpylib is distributed in the hope that it will be useful,
+# crcengine is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with crcpylib.  If not, see <https://www.gnu.org/licenses/>.
+# along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 U8_MAX = 255
 U16_MAX = ((1 << 16) - 1)

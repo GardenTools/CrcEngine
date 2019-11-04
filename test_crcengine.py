@@ -1,21 +1,21 @@
-"""Unit tests for the crcpylib module"""
-# This file is part of crcpylib.
+"""Unit tests for the crcengine module"""
+# This file is part of crcengine.
 #
-# crcpylib is free software: you can redistribute it an d /or modify
+# crcengine is free software: you can redistribute it an d /or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# crcpylib is distributed in the hope that it will be useful,
+# crcengine is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with crcpylib.  If not, see <https://www.gnu.org/licenses/>.
+# along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 import struct
 import pytest
-from crcpylib import CrcEngine, bit_reverse_n, U32_MAX
+from crcengine import CrcEngine, bit_reverse_n, U32_MAX
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = CrcEngine.get_algorithm_params('crc32')['poly']
 

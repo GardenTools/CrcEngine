@@ -14,4 +14,4 @@ script:
 jobs:
   include:
     -stage: pylint
-    script: pylint --exit-zero crcpylib.py
+    script: pylint --exit-zero crcengine.py

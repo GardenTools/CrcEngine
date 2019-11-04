@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.com/GardenTools/crcpylib.svg?token=sQrmEU8kgQPPzaheXBfq&branch=master)](https://travis-ci.com/GardenTools/crcpylib)
+[![Build Status](https://travis-ci.com/GardenTools/crcengine.svg?token=sQrmEU8kgQPPzaheXBfq&branch=master)](https://travis-ci.com/GardenTools/crcengine)
 
-CrcPyLib
+CrcEngine
 ========
 A python library for CRC calculation providing table-based as well as
 bit-bashing implementations (for reference).
@@ -20,7 +20,7 @@ Examples
 --------
 Using a pre-defined algorithm
 ```python
-from crcpylib import CrcEngine
+from crcengine import CrcEngine
 crc_algorithm = CrcEngine.new('crc32-bzip2')
 result = crc_algorithm(b'123456789')
 print('CRC=0x{:08x}'.format(result))
@@ -30,15 +30,15 @@ Output:
 
 Defining an algorithm
 ```python
-from crcpylib import CrcEngine
+from crcengine import CrcEngine
 crc_openpgp = CrcEngine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
                                ref_out=False, xor_out=0, name='crc-24-openpgp')
 ```
 
 Downloading
 -----------
- * The source is available on [github](https://github.com/GardenTools/crcpylib).
- * Git clone [https://github.com/GardenTools/crcpylib.git](https://github.com/GardenTools/crcpylib.git)
+ * The source is available on [github](https://github.com/GardenTools/crcengine).
+ * Git clone [https://github.com/GardenTools/crcengine.git](https://github.com/GardenTools/crcengine.git)
 
 ---
 
