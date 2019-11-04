@@ -246,175 +246,172 @@ class _CrcGenericLsbf:
         return self.calculate(data)
 
 
-class CrcEngine:
-    """Factory for creating CRC calculators"""
-    @classmethod
-    def new(cls, name):
-        """Create a new CRC calculation instance"""
-        params = cls.get_algorithm_params(name.lower())
-        # the check field is not part of the definition, remove it before
-        # creating the algorithm
-        del params['check']
-        return cls.create(**params)
+def new(name):
+    """Create a new CRC calculation instance"""
+    params = get_algorithm_params(name.lower())
+    # the check field is not part of the definition, remove it before
+    # creating the algorithm
+    del params['check']
+    return create(**params)
 
-    @classmethod
-    def get_algorithm_params(cls, name):
-        """ Obtain the parameters for a named CRC algorithm
 
-        :param name: Name of algorithm (lowercase)
-        :return: dict of algorithm parameters
-        """
-        raw_params = _ALGORITHMS[name]
-        param_dict = dict(zip(_FIELDS, raw_params))
-        param_dict['name'] = name
-        return param_dict
+def get_algorithm_params(name):
+    """ Obtain the parameters for a named CRC algorithm
 
-    @classmethod
-    def algorithms_available(cls):
-        """Obtain a list of available named CRC algorithms"""
-        return _ALGORITHMS.keys()
+    :param name: Name of algorithm (lowercase)
+    :return: dict of algorithm parameters
+    """
+    raw_params = _ALGORITHMS[name]
+    param_dict = dict(zip(_FIELDS, raw_params))
+    param_dict['name'] = name
+    return param_dict
 
-    @classmethod
-    def create(cls, poly, width, seed, ref_in=True, ref_out=True, name='',
-               xor_out=0xFFFFFF):
-        """Create a table-driven CRC calculation engine"""
-        if ref_in:
-            table = cls.create_lsb_table(poly, width)
-            algorithm = _CrcLsbf(table, width, seed,
-                                 reverse_result=(ref_in != ref_out),
-                                 xor_out=xor_out,
-                                 name=name)
-        else:
-            table = cls.create_msb_table(poly, width)
-            algorithm = _CrcMsbf(table, width, seed,
-                                 reverse_result=ref_out,
-                                 xor_out=xor_out, name=name)
-        return algorithm
 
-    @classmethod
-    def create_generic(cls, poly, width, seed, ref_in=True, ref_out=True,
-                       name='', xor_out=0xFFFFFF):
-        """ Create generic non-table-driven CRC calculator
+def algorithms_available():
+    """Obtain a list of available named CRC algorithms"""
+    return _ALGORITHMS.keys()
 
-        :param poly: Polynomial
-        :param width: calculator width in bits e.g. 32
-        :param seed: calculation seed value
-        :param ref_in: reflect incoming bits
-        :param ref_out: reflect result bits
-        :param name: name to assign to calculator
-        :param xor_out: pattern to XOR into result
-        :return: A CRC calculation engine
-        """
-        return _CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
+
+def create(poly, width, seed, ref_in=True, ref_out=True, name='',
+           xor_out=0xFFFFFF):
+    """Create a table-driven CRC calculation engine"""
+    if ref_in:
+        table = create_lsb_table(poly, width)
+        algorithm = _CrcLsbf(table, width, seed,
+                             reverse_result=(ref_in != ref_out),
+                             xor_out=xor_out,
+                             name=name)
+    else:
+        table = create_msb_table(poly, width)
+        algorithm = _CrcMsbf(table, width, seed,
+                             reverse_result=ref_out,
+                             xor_out=xor_out, name=name)
+    return algorithm
+
+
+def create_generic(poly, width, seed, ref_in=True, ref_out=True,
+                   name='', xor_out=0xFFFFFF):
+    """ Create generic non-table-driven CRC calculator
+
+    :param poly: Polynomial
+    :param width: calculator width in bits e.g. 32
+    :param seed: calculation seed value
+    :param ref_in: reflect incoming bits
+    :param ref_out: reflect result bits
+    :param name: name to assign to calculator
+    :param xor_out: pattern to XOR into result
+    :return: A CRC calculation engine
+    """
+    return _CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
+                       xor_out=xor_out, name=name)
+
+
+def create_generic_lsbf(poly, width, seed, ref_in=True, ref_out=True,
+                        name='', xor_out=0xFFFFFF):
+    """Create a CRC calculation engine that uses the Least-significant first
+    algorithm, but does not reflect the polynomial. If you use this, reflect
+    the polynomial before passing it in"""
+    return _CrcGenericLsbf(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
                            xor_out=xor_out, name=name)
 
-    @classmethod
-    def create_generic_lsbf(cls, poly, width, seed, ref_in=True, ref_out=True,
-                            name='', xor_out=0xFFFFFF):
-        """Create a CRC calculation engine that uses the Least-significant first
-        algorithm, but does not reflect the polynomial. If you use this, reflect
-        the polynomial before passing it in"""
-        return _CrcGenericLsbf(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
-                               xor_out=xor_out, name=name)
 
-    @classmethod
-    def create_msb_table_individual(cls, poly, width):
-        """ Generate a CRC table calculating each entry.
-            Mainly for demonstration and test, since calculate_msb_table() is
-            much more efficient to calculate
-        :return: Generated table
-        """
-        msb_lshift = width - 8
-        ms_bit = 1 << (width - 1)
-        result_mask = (1 << width) - 1
-        table = 256 * [0]
-        for n in range(1, 256):
-            crc = n << msb_lshift
-            for _ in range(8):
-                if crc & ms_bit:
-                    crc = (crc << 1) ^ poly
-                else:
-                    crc <<= 1
-            table[n] = crc & result_mask
-        return table
-
-    @classmethod
-    def create_msb_table(cls, poly, width):
-        """ Calculate a CRC lookup table for the selected algorithm definition
-        :return: list of CRC values
-        """
-        ms_bit = 1 << (width - 1)
-        result_mask = (1 << width) - 1
-        # Preallocate entries to 0
-        table = 256 * [0]
-        # this is essentially the '1' shifted left by the number of
-        # bits necessary for it to reach the msbit of the remainder value
-        crc = ms_bit
-        # i is the index of the table that is being computed this loop
-        i = 1
-        while i <= 128:
-            # Each (1<<n) must have the polynomial applied to it n+1 times
-            # since 1 must be shifted left 7 times before a non-zero bit is in
-            # the msb, there are no more shifts to be done
-            # 2 requires 6 shifts for a non-zero bit in the msbit, so the msbit
-            # test (and conditional polynomial xor) is applied once more
-            # 4 requires 5 shifts for a non-zero bit in the msbit, so the
-            # the msb test is applied three times.
-            # We take advantage of this property by reusing the result for n
-            # in the calculation of the result for 2n
+def create_msb_table_individual(poly, width):
+    """ Generate a CRC table calculating each entry.
+        Mainly for demonstration and test, since calculate_msb_table() is
+        much more efficient to calculate
+    :return: Generated table
+    """
+    msb_lshift = width - 8
+    ms_bit = 1 << (width - 1)
+    result_mask = (1 << width) - 1
+    table = 256 * [0]
+    for n in range(1, 256):
+        crc = n << msb_lshift
+        for _ in range(8):
             if crc & ms_bit:
                 crc = (crc << 1) ^ poly
             else:
                 crc <<= 1
-            crc &= result_mask
-            # because all operations are xors the following holds:
-            # table[i ^ j] == table[i] ^ table[j]
-            # The result for n can be combined with all the results for 0..(n-1)
-            # to determine the (n+1)..(2n-1) th entries without any further
-            # calculation
-            # since i is a power of 2 and always larger than j
-            # i + j == i ^ j
-            for j in range(0, i):
-                table[i + j] = table[j] ^ crc
-            i <<= 1
-        return table
+        table[n] = crc & result_mask
+    return table
 
-    @classmethod
-    def create_lsb_table(cls, poly, width):
-        """ Calculate a CRC lookup table for the selected algorithm definition
-        producing a table that can be used for the lsbit algorithm
 
-        :return: table of reflected
-        """
-        table = 256 * [0]
-        crc = 1
-        # i is the index of the table that is being computed this loop
-        # the lsb table contains an implicit reflection of the data byte so
-        # '1' is a reflected 128
-        i = 0x80
-        poly = bit_reverse_n(poly, width)
-        # On iteration we compute index positions 128, 64, 32 ...
-        # this can be done with a single application of the polynomial bit test
-        # since we know only one bit is set. We re-use the value of index 2n to
-        # calculate n
-        while i > 0:
-            # Apply the test for lsb set and the (reflected) polynomial
-            # to bits shifting in from the left
-            # so the first tests 0x80 >> 7, the second iteration re-uses this to
-            # represent application 0x40 >> 6 and then applies the test again
-            # for the remaining shift etc.
-            if crc & 1:
-                crc = (crc >> 1) ^ poly
-            else:
-                crc >>= 1
-            # Having computed the value of a power of 2 entry, we can combine
-            # it with the values from the (larger) power of 2 entries that have
-            # been already calculated, this can be done because
-            #  table[i + j] == table[i] ^ table[j]
-            for j in range(0, 256, 2 * i):
-                table[i + j] = crc ^ table[j]
-            i >>= 1
-        return table
+def create_msb_table(poly, width):
+    """ Calculate a CRC lookup table for the selected algorithm definition
+    :return: list of CRC values
+    """
+    ms_bit = 1 << (width - 1)
+    result_mask = (1 << width) - 1
+    # Preallocate entries to 0
+    table = 256 * [0]
+    # this is essentially the '1' shifted left by the number of
+    # bits necessary for it to reach the msbit of the remainder value
+    crc = ms_bit
+    # i is the index of the table that is being computed this loop
+    i = 1
+    while i <= 128:
+        # Each (1<<n) must have the polynomial applied to it n+1 times
+        # since 1 must be shifted left 7 times before a non-zero bit is in
+        # the msb, there are no more shifts to be done
+        # 2 requires 6 shifts for a non-zero bit in the msbit, so the msbit
+        # test (and conditional polynomial xor) is applied once more
+        # 4 requires 5 shifts for a non-zero bit in the msbit, so the
+        # the msb test is applied three times.
+        # We take advantage of this property by reusing the result for n
+        # in the calculation of the result for 2n
+        if crc & ms_bit:
+            crc = (crc << 1) ^ poly
+        else:
+            crc <<= 1
+        crc &= result_mask
+        # because all operations are xors the following holds:
+        # table[i ^ j] == table[i] ^ table[j]
+        # The result for n can be combined with all the results for 0..(n-1)
+        # to determine the (n+1)..(2n-1) th entries without any further
+        # calculation
+        # since i is a power of 2 and always larger than j
+        # i + j == i ^ j
+        for j in range(0, i):
+            table[i + j] = table[j] ^ crc
+        i <<= 1
+    return table
+
+
+def create_lsb_table(poly, width):
+    """ Calculate a CRC lookup table for the selected algorithm definition
+    producing a table that can be used for the lsbit algorithm
+
+    :return: table of reflected
+    """
+    table = 256 * [0]
+    crc = 1
+    # i is the index of the table that is being computed this loop
+    # the lsb table contains an implicit reflection of the data byte so
+    # '1' is a reflected 128
+    i = 0x80
+    poly = bit_reverse_n(poly, width)
+    # On iteration we compute index positions 128, 64, 32 ...
+    # this can be done with a single application of the polynomial bit test
+    # since we know only one bit is set. We re-use the value of index 2n to
+    # calculate n
+    while i > 0:
+        # Apply the test for lsb set and the (reflected) polynomial
+        # to bits shifting in from the left
+        # so the first tests 0x80 >> 7, the second iteration re-uses this to
+        # represent application 0x40 >> 6 and then applies the test again
+        # for the remaining shift etc.
+        if crc & 1:
+            crc = (crc >> 1) ^ poly
+        else:
+            crc >>= 1
+        # Having computed the value of a power of 2 entry, we can combine
+        # it with the values from the (larger) power of 2 entries that have
+        # been already calculated, this can be done because
+        #  table[i + j] == table[i] ^ table[j]
+        for j in range(0, 256, 2 * i):
+            table[i + j] = crc ^ table[j]
+        i >>= 1
+    return table
 
 
 def bit_reverse_byte(byte):

@@ -15,29 +15,30 @@
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 import struct
 import pytest
-from crcengine import CrcEngine, bit_reverse_n, U32_MAX
+import crcengine
+from crcengine import U32_MAX, get_algorithm_params, bit_reverse_n
 # pylint: disable=missing-function-docstring,redefined-outer-name
-_CRC32_POLY = CrcEngine.get_algorithm_params('crc32')['poly']
+_CRC32_POLY = get_algorithm_params('crc32')['poly']
 
 
 @pytest.fixture
 def crc32():
-    return CrcEngine.new('crc32')
+    return crcengine.new('crc32')
 
 
 @pytest.fixture
 def crc16_kermit():
-    return CrcEngine.new('crc16-kermit')
+    return crcengine.new('crc16-kermit')
 
 
 @pytest.fixture
 def crc16_xmodem():
-    return CrcEngine.new('crc16-xmodem')
+    return crcengine.new('crc16-xmodem')
 
 
 @pytest.fixture
 def crc16_autosar():
-    return CrcEngine.new('crc16-autosar')
+    return crcengine.new('crc16-autosar')
 
 
 def test_reverse_poly():
@@ -50,23 +51,23 @@ def test_reverse_poly():
 
 
 def test_crc8():
-    crc8 = CrcEngine.new('crc8')
+    crc8 = crcengine.new('crc8')
     assert crc8(b'123456789') == 0xbc
 
 
 def test_crc8_autosar():
-    crc8 = CrcEngine.new('crc8-autosar')
+    crc8 = crcengine.new('crc8-autosar')
     assert crc8(b'123456789') == 0xdf
 
 
 def test_crc8_bluetooth():
-    crc8 = CrcEngine.new('crc8-bluetooth')
+    crc8 = crcengine.new('crc8-bluetooth')
     assert crc8(b'123456789') == 0x26
 
 
 def test_crc32_generic():
     """Test the generic calculation engine with a CRC32"""
-    crc32_generic = CrcEngine.create_generic(_CRC32_POLY, 32, U32_MAX,
+    crc32_generic = crcengine.create_generic(_CRC32_POLY, 32, U32_MAX,
                                              ref_in=True, ref_out=True,
                                              xor_out=U32_MAX)
     assert crc32_generic(b'123456789') == 0xCBF43926
@@ -74,16 +75,17 @@ def test_crc32_generic():
 
 
 def test_crc32_generic_lsb():
-    poly = bit_reverse_n(_CRC32_POLY, 32)
+    poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
-    crc32_generic = CrcEngine.create_generic_lsbf(
-        poly, 32, U32_MAX, ref_in=False, ref_out=False, xor_out=U32_MAX)
+    crc32_generic = crcengine.create_generic_lsbf(
+        poly, 32, crcengine.U32_MAX, ref_in=False, ref_out=False,
+        xor_out=crcengine.U32_MAX)
     assert crc32_generic.calculate(b'A') == 0xD3D99E8B
     assert crc32_generic.calculate(b'123456789') == 0xCBF43926
 
 
 def test_generate_crc32_table_individual():
-    table = CrcEngine.create_msb_table_individual(_CRC32_POLY, 32)
+    table = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x04C11DB7
@@ -92,7 +94,7 @@ def test_generate_crc32_table_individual():
 
 
 def test_generate_crc32_msb_table():
-    table = CrcEngine.create_msb_table(_CRC32_POLY, 32)
+    table = crcengine.create_msb_table(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x04C11DB7
@@ -102,7 +104,7 @@ def test_generate_crc32_msb_table():
 
 
 def test_generate_crc32_lsb_table():
-    table = CrcEngine.create_lsb_table(_CRC32_POLY, 32)
+    table = crcengine.create_lsb_table(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x77073096
@@ -112,7 +114,7 @@ def test_generate_crc32_lsb_table():
 
 
 def test_generate_crc32_msb_table_individual():
-    table = CrcEngine.create_msb_table_individual(_CRC32_POLY, 32)
+    table = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x04C11DB7
@@ -133,14 +135,14 @@ def test_crc32_table_driven(crc32):
 
 
 def test_crc32_bzip2():
-    crc32_bzip2 = CrcEngine.new('crc32-bzip2')
+    crc32_bzip2 = crcengine.new('crc32-bzip2')
     assert crc32_bzip2(b'A') == 0x81B02D8B
     assert crc32_bzip2(b'123456789') == 0xFC891918
 
 
 def test_tables_crosscheck():
-    table1 = CrcEngine.create_msb_table_individual(_CRC32_POLY, 32)
-    table2 = CrcEngine.create_msb_table(_CRC32_POLY, 32)
+    table1 = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
+    table2 = crcengine.create_msb_table(_CRC32_POLY, 32)
     for n, (val1, val2) in enumerate(zip(table1, table2)):
         assert val1 == val2, 'Mismatch for entry {}'.format(n)
 
@@ -181,16 +183,16 @@ def test_crc16_autosar_results(crc16_autosar):
 
 
 def test_available_algorithms():
-    available = CrcEngine.algorithms_available()
+    available = crcengine.algorithms_available()
     assert 'crc32' in available
     assert 'crc16-xmodem' in available
     assert 'crc-womble' not in available
 
 
-@pytest.mark.parametrize("algorithm_name", CrcEngine.algorithms_available())
+@pytest.mark.parametrize("algorithm_name", crcengine.algorithms_available())
 def test_algorithm_checks(algorithm_name):
     """Check the result of every algorithm against its recorded check-word"""
-    check_word = CrcEngine.get_algorithm_params(algorithm_name)['check']
-    crc_alg = CrcEngine.new(algorithm_name)
+    check_word = crcengine.get_algorithm_params(algorithm_name)['check']
+    crc_alg = crcengine.new(algorithm_name)
     assert crc_alg(b'123456789') == check_word,\
         'Check CRC mismatch for {}'.format(algorithm_name)

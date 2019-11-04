@@ -20,8 +20,8 @@ Examples
 --------
 Using a pre-defined algorithm
 ```python
-from crcengine import CrcEngine
-crc_algorithm = CrcEngine.new('crc32-bzip2')
+import crcengine
+crc_algorithm = crcengine.new('crc32-bzip2')
 result = crc_algorithm(b'123456789')
 print('CRC=0x{:08x}'.format(result))
 ```
@@ -30,8 +30,8 @@ Output:
 
 Defining an algorithm
 ```python
-from crcengine import CrcEngine
-crc_openpgp = CrcEngine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
+import crcengine
+crc_openpgp = crcengine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
                                ref_out=False, xor_out=0, name='crc-24-openpgp')
 ```
 
