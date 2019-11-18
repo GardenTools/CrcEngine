@@ -1,13 +1,20 @@
 .. image:: https://img.shields.io/pypi/v/crcengine.svg
         :target: https://pypi.python.org/pypi/crcengine
+
 .. image:: https://travis-ci.com/GardenTools/CrcEngine.svg?branch=master
         :target: https://travis-ci.com/GardenTools/crcengine
+
 .. image:: https://readthedocs.org/projects/crcengine/badge/?version=latest
         :target: https://crcengine.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
-.. image:: https://pyup.io/repos/github/GardenTools/crcengine/shield.svg
-     :target: https://pyup.io/repos/github/GardenTools/crcengine/
-     :alt: Updates
+
+.. image:: https://pyup.io/repos/github/GardenTools/CrcEngine/shield.svg
+        :target: https://pyup.io/account/repos/github/GardenTools/CrcEngine/
+        :alt: Updates
+
+.. image:: https://pyup.io/repos/github/GardenTools/CrcEngine/python-3-shield.svg
+        :target: https://pyup.io/account/repos/github/GardenTools/CrcEngine/
+        :alt: Python3 ready
 
 =========
 CrcEngine
