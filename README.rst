@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/crcengine.svg
         :target: https://pypi.python.org/pypi/crcengine
-.. image:: https://img.shields.io/travis/GardenTools/crcengine.svg
-        :target: https://travis-ci.org/GardenTools/crcengine
+.. image:: https://travis-ci.com/GardenTools/CrcEngine.svg?branch=master
+        :target: https://travis-ci.com/GardenTools/crcengine
 .. image:: https://readthedocs.org/projects/crcengine/badge/?version=latest
         :target: https://crcengine.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
