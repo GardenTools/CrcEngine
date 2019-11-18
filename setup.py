@@ -4,8 +4,7 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
-
-import crcengine._version
+from crcengine._version import __version__
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -13,11 +12,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = []
+requirements = ['jinja2>=2.7']
 
-setup_requirements = ['jinja2>=2.7']  # ['pytest-runner', ]
+setup_requirements = []
 
-test_requirements = ['pytest>=3', 'tox>=3']
+test_requirements = ['pytest>=3', 'pylint', 'tox>=3']
 
 setup(
     author="Garden Tools",
@@ -29,7 +28,6 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
@@ -37,12 +35,12 @@ setup(
     description="A library for CRC calculation",
     entry_points={
         'console_scripts': [
-            'crcengine=crcengine.cli:main',
+            'crcengine=crcengine.cli:main',  # TODO add this module
         ],
     },
     install_requires=requirements,
     license="GNU General Public License v3",
-    long_description=readme + '\n\n',  # + history,
+    long_description=readme + '\n',
     include_package_data=True,
     keywords='crcengine',
     name='crcengine',
@@ -51,6 +49,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/GardenTools/crcengine',
-    version=crcengine.__version__,
+    version=__version__,
     zip_safe=False,
 )
