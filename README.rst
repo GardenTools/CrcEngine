@@ -9,12 +9,8 @@
         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/GardenTools/CrcEngine/shield.svg
-        :target: https://pyup.io/account/repos/github/GardenTools/CrcEngine/
-        :alt: Updates
-
-.. image:: https://pyup.io/repos/github/GardenTools/CrcEngine/python-3-shield.svg
-        :target: https://pyup.io/account/repos/github/GardenTools/CrcEngine/
-        :alt: Python3 ready
+     :target: https://pyup.io/repos/github/GardenTools/CrcEngine/
+     :alt: Updates
 
 =========
 CrcEngine
