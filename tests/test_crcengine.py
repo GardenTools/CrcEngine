@@ -16,9 +16,10 @@
 import struct
 import pytest
 import crcengine
-from crcengine import U32_MAX, get_algorithm_params, bit_reverse_n
+from crcengine import get_algorithm_params, bit_reverse_n
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params('crc32')['poly']
+_U32_MAX = crcengine.get_maximum_value(32)
 
 
 @pytest.fixture
@@ -67,9 +68,9 @@ def test_crc8_bluetooth():
 
 def test_crc32_generic():
     """Test the generic calculation engine with a CRC32"""
-    crc32_generic = crcengine.create_generic(_CRC32_POLY, 32, U32_MAX,
-                                             ref_in=True, ref_out=True,
-                                             xor_out=U32_MAX)
+    crc32_generic = crcengine.create_generic(_CRC32_POLY, 32, _U32_MAX,
+                                       ref_in=True, ref_out=True,
+                                       xor_out=_U32_MAX)
     assert crc32_generic(b'123456789') == 0xCBF43926
     assert crc32_generic(b'A') == 0xD3D99E8B
 
@@ -78,8 +79,8 @@ def test_crc32_generic_lsb():
     poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
     crc32_generic = crcengine.create_generic_lsbf(
-        poly, 32, crcengine.U32_MAX, ref_in=False, ref_out=False,
-        xor_out=crcengine.U32_MAX)
+        poly, 32, _U32_MAX, ref_in=False, ref_out=False,
+        xor_out=_U32_MAX)
     assert crc32_generic.calculate(b'A') == 0xD3D99E8B
     assert crc32_generic.calculate(b'123456789') == 0xCBF43926
 
