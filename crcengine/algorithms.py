@@ -85,7 +85,8 @@ _ALGORITHMS = {
 
 
 class AlgorithmNotFoundError(Exception):
-    pass
+    """Exception raised when an algorithm is requested that doesn't exist in
+     the table"""
 
 
 def get_algorithm_params(name, include_check=False):
@@ -100,7 +101,6 @@ def get_algorithm_params(name, include_check=False):
     try:
         raw_params = _ALGORITHMS[name]
     except KeyError as e:
-        import sys
         raise AlgorithmNotFoundError(name) from e
     final = None if include_check else -1
     param_dict = dict(zip(_FIELDS[:final], raw_params[:final]))
