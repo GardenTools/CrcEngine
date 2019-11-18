@@ -10,11 +10,10 @@ attrs==19.3.0             # via pytest
 click==7.0                # via pip-tools
 colorama==0.4.1           # via pylint, pytest
 filelock==3.0.12          # via tox
-importlib-metadata==0.23  # via pluggy, pytest, tox
 isort==4.3.21             # via pylint
 lazy-object-proxy==1.4.3  # via astroid
 mccabe==0.6.1             # via pylint
-more-itertools==7.2.0     # via pytest, zipp
+more-itertools==7.2.0     # via pytest
 packaging==19.2           # via pytest, tox
 pip-tools==4.2.0
 pluggy==0.13.0            # via pytest, tox
@@ -25,8 +24,7 @@ pytest==5.2.4
 six==1.13.0               # via astroid, packaging, pip-tools, tox
 toml==0.10.0              # via tox
 tox==3.14.1
-typed-ast==1.4.0          # via astroid
 virtualenv==16.7.7        # via tox
 wcwidth==0.1.7            # via pytest
+wheel==0.33.6
 wrapt==1.11.2             # via astroid
-zipp==0.6.0               # via importlib-metadata
