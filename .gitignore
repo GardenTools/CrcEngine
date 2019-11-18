@@ -1,3 +1,7 @@
-/venv/
 /.coverage
+/.tox/
+/crcengine.egg-info/
+/dist/
 /htmlcov/
+/venv/
+build/

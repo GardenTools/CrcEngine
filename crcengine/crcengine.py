@@ -17,9 +17,9 @@ A python library for CRC calculation
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-U8_MAX = 255
-U16_MAX = ((1 << 16) - 1)
-U32_MAX = ((1 << 32) - 1)
+_U8_MAX = 255
+_U16_MAX = ((1 << 16) - 1)
+_U32_MAX = ((1 << 32) - 1)
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
 _CRC16_CCITT_POLY = 0x1021
@@ -30,13 +30,13 @@ _FIELDS = ('poly', 'width', 'seed', 'ref_in', 'ref_out', 'xor_out', 'check')
 _ALGORITHMS = {
     # =========================  8-bit ========================================
     'crc8': (0xD5, 8, 0, False, False, 0, 0xbc),
-    'crc8-autosar': (0x2f, 8, U8_MAX, False, False, U8_MAX, 0xdf),
+    'crc8-autosar': (0x2f, 8, _U8_MAX, False, False, _U8_MAX, 0xdf),
     'crc8-bluetooth': (0xa7, 8, 0, True, True, 0, 0x26),
     # ITU I.432.1 https://www.itu.int/rec/T-REC-I.432.1-199902-I/en
     'crc8-ccitt': (0x07, 8, 0, False, False, 0x55, 0xa1),
     # https://www.etsi.org/deliver/etsi_ts/100900_100999/100909/08.09.00_60/ts_100909v080900p.pdf
-    'crc8-gsm-b': (0x49, 8, 0, False, False, U8_MAX, 0x94),
-    'crc8-sae-j1850': (0x1d, 8, U8_MAX, False, False, U8_MAX, 0x4b),
+    'crc8-gsm-b': (0x49, 8, 0, False, False, _U8_MAX, 0x94),
+    'crc8-sae-j1850': (0x1d, 8, _U8_MAX, False, False, _U8_MAX, 0x4b),
     # ========================= 15-bit ========================================
     'crc15-can': (0x4599, 15, 0, False, False, 0, 0x059e),
     # ========================= 16-bit ========================================
@@ -57,25 +57,25 @@ _ALGORITHMS = {
     'crc16-xmodem': (_CRC16_CCITT_POLY, 16, 0, False, False, 0, 0x31c3),
     # AKA CRC16-CCITT-FALSE
     # Reference https://www.autosar.org/fileadmin/Releases_TEMP/Classic_Platform_4.4.0/Libraries.zip
-    'crc16-autosar': (_CRC16_CCITT_POLY, 16, U16_MAX, False, False, 0, 0x29b1),
+    'crc16-autosar': (_CRC16_CCITT_POLY, 16, _U16_MAX, False, False, 0, 0x29b1),
     #  crc16-ccitt-false is an alias of crc16-autosar
-    'crc16-ccitt-false': (_CRC16_CCITT_POLY, 16, U16_MAX, False, False, 0, 0x29b1),
-    'crc16-cdma2000': (0xC867, 16, U16_MAX, False, False, 0, 0x4c06),
+    'crc16-ccitt-false': (_CRC16_CCITT_POLY, 16, _U16_MAX, False, False, 0, 0x29b1),
+    'crc16-cdma2000': (0xC867, 16, _U16_MAX, False, False, 0, 0x4c06),
     # Algorithms normally called "CRC16"
     'crc16-ibm': (0x8005, 16, 0, True, True, 0, 0xbb3d),
-    'crc16-modbus': (0x8005, 16, U16_MAX, True, True, 0, 0x4b37),
-    'crc16-profibus': (0x1dcf, 16, U16_MAX, False, False, U16_MAX, 0xa819),
+    'crc16-modbus': (0x8005, 16, _U16_MAX, True, True, 0, 0x4b37),
+    'crc16-profibus': (0x1dcf, 16, _U16_MAX, False, False, _U16_MAX, 0xa819),
     # ========================= 24-bit ========================================
     'crc24-flexray16-a': (0x5d6dcb, 24, 0xfedcba, False, False, 0, 0x7979bd),
     'crc24-flexray16-b': (0x5d6dcb, 24, 0xabcdef, False, False, 0, 0x1f23b8),
     # ========================= 32-bit ========================================
     # Ethernet CRC32
     # https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-130.pdf
-    'crc32': (_CRC32_POLY, 32, U32_MAX, True, True, U32_MAX, 0xCBF43926),
+    'crc32': (_CRC32_POLY, 32, _U32_MAX, True, True, _U32_MAX, 0xCBF43926),
     # CRC32 as implemented in BZIP, same polynomial but no reflection
-    'crc32-bzip2': (_CRC32_POLY, 32, U32_MAX, False, False, U32_MAX, 0xfc891918),
+    'crc32-bzip2': (_CRC32_POLY, 32, _U32_MAX, False, False, _U32_MAX, 0xfc891918),
     # Castagnoli CRC used in iSCSi SSE4, ext4
-    'crc32-c': (0x1edc6f41, 32, U32_MAX, True, True, U32_MAX, 0xe3069283),
+    'crc32-c': (0x1edc6f41, 32, _U32_MAX, True, True, _U32_MAX, 0xe3069283),
     # ========================= 64-bit ========================================
     'crc64-ecma': (0x42F0E1EBA9EA3693, 64, 0, False, False, 0, 0x6c40df5f0b497347),
 }
@@ -440,6 +440,12 @@ def bit_reverse_n(value, num_bits):
         result |= _REV8BITS[value & 0xFF]
         value >>= 8
     return result
+
+
+def get_maximum_value(nbits):
+    """Convenience function returning largest unsigned integer for a given
+     number of bits"""
+    return (1 << nbits) - 1
 
 
 # Table of bit-reversed bits for fast bit reversal, initialised on loading

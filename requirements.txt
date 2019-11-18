@@ -1,4 +1,4 @@
 pylint
 pytest
 pytest-cov
-
+tox
