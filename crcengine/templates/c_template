@@ -1,0 +1,48 @@
+{{preamble}}
+#include <stddef.h>
+{% for include in c_includes %}
+{{include}}
+{% endfor %}
+#include "{{header_file}}"
+
+{% if xor_out is defined -%}
+#define RESULT_XOR_MASK {{xor_out}}
+
+{% set return_expression = 'crc ^ RESULT_XOR_MASK' %}
+{% else %}
+{% set return_expression = 'crc' %}
+{% endif %}
+
+{%- if reflect %}
+{% set shift_op = '>>' %}
+{% macro select_lu_byte(value) %}({{value}} & 0xFFu){% endmacro %}
+{% else %}
+{% set shift_op = '<<' %}
+{% macro select_lu_byte(value) %}({{value}} >> {{msb_shift}}){% endmacro %}
+{% endif -%}
+
+{{ before_table -}}
+
+static const {{crc_datatype}} {{table_name}}[] = {
+{% for row in value_rows %}
+{{row}}
+{% endfor %}
+};
+
+{{- after_table }}
+
+{{crc_datatype}} {{function_name}}(const {{byte_type}} data[], size_t num_bytes{%if seed is undefined %}, {{crc_datatype}} seed{% endif %})
+{
+{%if seed is not defined %}
+    {{crc_datatype}} crc=seed;
+{% else %}
+    {{crc_datatype}} crc={{seed}};
+{% endif %}
+    for (size_t i=0u; i<num_bytes; i++)
+    {
+        uint8_t byte_val = data[i];
+        crc = (crc {{shift_op}} 8) ^ {{table_name}}[{{ select_lu_byte('crc') }} ^ byte_val];
+    }
+{# TODO if reverse is performed, do it here #}
+    return {{return_expression}};
+}

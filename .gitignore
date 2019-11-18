@@ -5,3 +5,5 @@
 /htmlcov/
 /venv/
 build/
+/out/
+examples/out/

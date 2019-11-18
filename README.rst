@@ -51,6 +51,19 @@ Defining an algorithm
                                  ref_out=False, xor_out=0, name='crc-24-openpgp')
 
 
+Code Generation
+---------------
+The library can generate C code for a given table-algorithm. The code produced
+is intended to be a reasonable compromise between size, complexity and speed
+without requiring allocation of memory for table generation at runtime.
+
+Faster implementations of specific algorithms can be achived in software which
+unroll loops and pipeline the operations different bytes to introduce
+parallelism in the calculation see intel_soft_src_ for example. Some processors
+also include instructions specifically for crc calculation.
+
+.. _intel_soft_src: https://github.com/intel/soft-crc
+
 Downloading
 -----------
 - The source is available on github_

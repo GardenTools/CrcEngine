@@ -17,6 +17,7 @@ import struct
 import pytest
 import crcengine
 from crcengine import get_algorithm_params, bit_reverse_n
+
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params('crc32')['poly']
 _U32_MAX = crcengine.get_maximum_value(32)
@@ -193,7 +194,7 @@ def test_available_algorithms():
 @pytest.mark.parametrize("algorithm_name", crcengine.algorithms_available())
 def test_algorithm_checks(algorithm_name):
     """Check the result of every algorithm against its recorded check-word"""
-    check_word = crcengine.get_algorithm_params(algorithm_name)['check']
+    check_word = crcengine.get_algorithm_params(algorithm_name, True)['check']
     crc_alg = crcengine.new(algorithm_name)
     assert crc_alg(b'123456789') == check_word,\
         'Check CRC mismatch for {}'.format(algorithm_name)

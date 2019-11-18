@@ -4,6 +4,7 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+
 import crcengine._version
 
 with open('README.rst') as readme_file:
@@ -14,7 +15,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = []
 
-setup_requirements = []  # ['pytest-runner', ]
+setup_requirements = ['jinja2>=2.7']  # ['pytest-runner', ]
 
 test_requirements = ['pytest>=3', 'tox>=3']
 
