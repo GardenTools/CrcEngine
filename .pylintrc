@@ -243,7 +243,10 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=f,
+# e is allowed for caught exceptions, f for opened files, mo for regex match
+# objects
+good-names=e,
+           f,
            i,
            j,
            k,

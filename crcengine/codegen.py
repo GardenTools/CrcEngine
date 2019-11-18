@@ -23,6 +23,8 @@ import os
 import pathlib
 import textwrap
 
+from jinja2 import Environment, FileSystemLoader
+
 from .algorithms import get_algorithm_params
 from .crcengine import create_lsb_table, create_msb_table
 from ._version import __version__ as crcengine_version
@@ -33,6 +35,8 @@ _GenFile = namedtuple('GenFile', ['template', 'output'])
 
 def generate_code(crc_params, output_dir='out/', language='C',
                   seed_parameter=False):
+    """Generate code implementing a specific CRC. Currently only language=C is
+     supported"""
     if isinstance(crc_params, str):
         # crc_params is an algorithm name, so replace it with the parameters
         crc_params = get_algorithm_params(crc_params)
@@ -82,7 +86,6 @@ def generate_code(crc_params, output_dir='out/', language='C',
 
 
 def _get_jinja_environment():
-    from jinja2 import Environment, FileSystemLoader
     templates_dir = _get_templates_dir()
     env = Environment(loader=FileSystemLoader(templates_dir), trim_blocks=True)
     return env
@@ -118,12 +121,12 @@ def _generate_table_text(crc_params, datatype_bits):
     :return:
     """
     # only support consistent combinations for now
-    assert crc_params['ref_in'] == crc_params['ref_out'], 'Code generation only supported with ref_in==ref_out'
+    assert crc_params['ref_in'] == crc_params['ref_out'],\
+        'Code generation only supported with ref_in==ref_out'
     if crc_params['ref_in']:
         table = create_lsb_table(crc_params['poly'], crc_params['width'])
     else:
         table = create_msb_table(crc_params['poly'], crc_params['width'])
-
     value_rows = _make_text_from_table(table, value_width=datatype_bits // 4)
     return value_rows
 
@@ -148,5 +151,5 @@ def _make_text_from_table(table, max_width=79, value_width=8, indent_width=4,
     wrapper = textwrap.TextWrapper(width=max_width, initial_indent=indent,
                                    subsequent_indent=indent,
                                    break_long_words=False)
-    wt = wrapper.wrap(txt)
-    return wt
+    wtext = wrapper.wrap(txt)
+    return wtext
