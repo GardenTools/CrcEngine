@@ -1,0 +1,10 @@
+#ifndef {{header_macro}}
+#define {{header_macro}}
+{{preamble}}
+{% for include in includes %}
+{{include}}
+{% endfor %}
+
+{{crc_datatype}} {{function_name}}(const {{byte_type}} data[], size_t num_bytes{%if seed is undefined %}, {{crc_datatype}} seed{% endif %});
+
+#endif /* {{header_macro}} */
