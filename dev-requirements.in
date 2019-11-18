@@ -1,4 +1,5 @@
+pip-tools
 pytest>=3
 pylint
 tox>=3
-pip-tools
+wheel>=0.26
