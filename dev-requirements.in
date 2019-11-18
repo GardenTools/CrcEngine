@@ -1,0 +1,4 @@
+pytest>=3
+pylint
+tox>=3
+pip-tools
