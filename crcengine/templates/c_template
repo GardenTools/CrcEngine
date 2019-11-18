@@ -7,7 +7,6 @@
 
 {% if xor_out is defined -%}
 #define RESULT_XOR_MASK {{xor_out}}
-
 {% set return_expression = 'crc ^ RESULT_XOR_MASK' %}
 {% else %}
 {% set return_expression = 'crc' %}
@@ -43,6 +42,5 @@ static const {{crc_datatype}} {{table_name}}[] = {
         uint8_t byte_val = data[i];
         crc = (crc {{shift_op}} 8) ^ {{table_name}}[{{ select_lu_byte('crc') }} ^ byte_val];
     }
-{# TODO if reverse is performed, do it here #}
     return {{return_expression}};
 }

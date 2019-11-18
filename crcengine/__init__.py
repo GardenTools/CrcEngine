@@ -1,6 +1,8 @@
 """
 This file is part of crcengine, a python library for CRC calculation
 
+Copyright 2019 Garden Tools software
+
 crcengine is free software: you can redistribute it an d /or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -16,3 +18,5 @@ along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
 from ._version import __version__
 from .crcengine import *
+from .algorithms import get_algorithm_params, algorithms_available
+from .codegen import generate_code
