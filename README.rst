@@ -44,6 +44,7 @@ Output:
 > CRC=0xfc891918
 
 Defining an algorithm
+
 .. code-block::
 
   import crcengine
