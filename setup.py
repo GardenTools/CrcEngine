@@ -2,15 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """The setup script."""
-
+from pathlib import Path
 from setuptools import setup, find_packages
-from crcengine._version import __version__
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
+
+version = {}
+package_root = Path(__file__).resolve().parent
+version_file = package_root.joinpath('src', 'crcengine', 'version.py')
+with open(version_file) as fp:
+    exec(fp.read(), version)
 
 requirements = ['jinja2>=2.7']
 
@@ -21,6 +26,7 @@ test_requirements = ['pytest>=3', 'pylint', 'tox>=3']
 setup(
     author="Garden Tools",
     author_email='gardensofdorwinion@gmail.com',
+    # This project uses f-strings
     python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -44,11 +50,12 @@ setup(
     include_package_data=True,
     keywords='crcengine',
     name='crcengine',
-    packages=find_packages(include=['crcengine', 'crcengine.*']),
+    package_dir = {'': 'src'},
+    packages=find_packages(where='src'),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/GardenTools/crcengine',
-    version=__version__,
+    version=version['__version__'],
     zip_safe=False,
 )

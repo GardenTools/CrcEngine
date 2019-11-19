@@ -1,5 +1,5 @@
 """
-This file is part of CrcEngine, a python library for CRC calculation
+This file is part of crcengine, a python library for CRC calculation
 
 Copyright 2019 Garden Tools software
 
@@ -16,4 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
-__version__ = '0.1.0'
+from .version import __version__
+from .crcengine import *
+from .algorithms import get_algorithm_params, algorithms_available
+from .codegen import generate_code

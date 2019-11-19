@@ -27,7 +27,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from .algorithms import get_algorithm_params
 from .crcengine import create_lsb_table, create_msb_table
-from ._version import __version__ as crcengine_version
+from .version import __version__ as crcengine_version
 
 # Generated file information
 _GenFile = namedtuple('GenFile', ['template', 'output'])

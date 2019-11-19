@@ -22,5 +22,5 @@ script:
   - |
     if [[ $TEST_TYPE == 'pylint' ]]; then
       pylint --version
-      pylint pylint --exit-zero crcengine.py;
+      pylint pylint --exit-zero src;
     fi

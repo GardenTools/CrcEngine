@@ -3,7 +3,15 @@
 include HISTORY.rst
 include LICENSE
 include README.rst
+include tox.ini
+include dev-requirements.in
+include dev-requirements.txt
+include requirements.in
+include requirements.txt
+include .pylintrc
+include .travis.yml
 
+recursive-include examples *
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
