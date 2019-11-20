@@ -1,0 +1,13 @@
+#!/bin/sh
+# Fix the exported VIRTUAL_ENV created in the bash script by windows-native
+# python. It just appends the win32 path with backslahes which doesn't work
+# in cygwin MSYS2 etc.
+
+set -eu
+
+VENV_ROOT="$1"
+#Save out the previous value in the activate script
+eval $(grep '^VIRTUAL_ENV' "${VENV_ROOT}/Scripts/activate" | sed 's/\(VIRTUAL_ENV=.*:\)/WIN32_\1/')
+GOOD_VENV=$(cygpath -u "$WIN32_VIRTUAL_ENV")
+sed -i.bak "s/^VIRTUAL_ENV=.*/VIRTUAL_ENV=${GOOD_VENV//\//\\\/}/" "${VENV_ROOT}/Scripts/activate" 
+
