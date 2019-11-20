@@ -50,8 +50,9 @@ setup(
     include_package_data=True,
     keywords='crcengine',
     name='crcengine',
-    package_dir = {'': 'src'},
-    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src', include=['crcengine', 'crcengine.*']),
+    #package_data={'',}
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

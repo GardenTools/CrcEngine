@@ -8,3 +8,5 @@ build/
 /out/
 examples/out/
 __pycache__
+/src/crcengine.egg-info/
+testenv/
