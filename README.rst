@@ -74,7 +74,7 @@ The library can generate C code for a given table-algorithm. The code produced
 is intended to be a reasonable compromise between size, complexity and speed
 without requiring allocation of memory for table generation at runtime.
 
-Faster implementations of specific algorithms can be achived in software which
+Faster implementations of specific algorithms can be achieved in software which
 unroll loops and pipeline the operations different bytes to introduce
 parallelism in the calculation see intel_soft_src_ for example. Some processors
 also include instructions specifically for crc calculation.
