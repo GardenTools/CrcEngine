@@ -21,16 +21,29 @@ bit-bashing implementations (for reference).
 * Free software: GNU General Public License v3
 * Documentation: https://crcengine.readthedocs.io.
 
+Installing
+----------
+CrcEngine can be installing using pip with
+
+.. code-block::
+
+    pip install crcengine
+
 Usage
 -----
-Use pre-defined algorithms such as CRC32 are available. Tailored algorithms can
+Pre-defined algorithms such as CRC32 are available. Tailored algorithms can
 be created by calling CrcEngine.create() and other related methods.
 
 A calculation engine for a specific named algorithm can be obtained using
 CrcEngine.new(). Algorithms which are not pre-defined can be created using
 CrcEngine.create() 
 
-A list of pre-defined algorithms can be obtained using CrcEngine.algorithms_available()
+A list of pre-defined algorithms can be obtained using crcengine.algorithms_available()
+
+.. code-block::
+
+   >>> list(crcengine.algorithms_available())
+   ['crc8', 'crc8-autosar', 'crc8-bluetooth', 'crc8-ccitt', 'crc8-gsm-b', 'crc8-sae-j1850', 'crc15-can', 'crc16-kermit', 'crc16-ccitt-true', 'crc16-xmodem', 'crc16-autosar', 'crc16-ccitt-false', 'crc16-cdma2000', 'crc16-ibm', 'crc16-modbus', 'crc16-profibus', 'crc24-flexray16-a', 'crc24-flexray16-b', 'crc32', 'crc32-bzip2', 'crc32-c', 'crc64-ecma']
 
 Examples
 --------
@@ -68,15 +81,33 @@ also include instructions specifically for crc calculation.
 
 .. _intel_soft_src: https://github.com/intel/soft-crc
 
+Code Generation Example usage:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generating code into a directory named "out" by passing CRC parameters
+
+.. code-block::
+
+    params = crcengine.get_algorithm_params('crc32')
+    crcengine.generate_code(params, 'out/')
+
+or referencing the algorithm by name
+
+.. code-block::
+
+    crcengine.generate_code('crc16-xmodem', 'out/')
+
+
 Downloading
 -----------
 - The source is available on github_
 - Git clone crcengine.git_
+- On pypi.org_
 
 .. _github: https://github.com/GardenTools/crcengine
 .. _crcengine.git: https://github.com/GardenTools/crcengine.git
+.. _pypi.org: https://pypi.org/project/crcengine/
 
-----
+--------
 
 With thanks to Greg Cook for providing such a thoroughly collated list of
 `CRC definitions`_
