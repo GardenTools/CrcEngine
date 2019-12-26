@@ -20,7 +20,7 @@ pip-tools==4.4.0
 pluggy==0.13.1            # via pytest, tox
 py==1.8.0                 # via pytest, tox
 pylint==2.4.4
-pyparsing==2.4.5          # via packaging
+pyparsing==2.4.6          # via packaging
 pytest-cov==2.8.1
 pytest==5.3.2
 six==1.14.0               # via astroid, packaging, pip-tools, tox
