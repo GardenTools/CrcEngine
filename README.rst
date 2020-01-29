@@ -25,7 +25,7 @@ Installing
 ----------
 CrcEngine can be installing using pip with
 
-.. code-block::
+.. code-block:: python
 
     pip install crcengine
 
@@ -40,7 +40,7 @@ CrcEngine.create()
 
 A list of pre-defined algorithms can be obtained using crcengine.algorithms_available()
 
-.. code-block::
+.. code-block:: python
 
    >>> list(crcengine.algorithms_available())
    ['crc8', 'crc8-autosar', 'crc8-bluetooth', 'crc8-ccitt', 'crc8-gsm-b', 'crc8-sae-j1850', 'crc15-can', 'crc16-kermit', 'crc16-ccitt-true', 'crc16-xmodem', 'crc16-autosar', 'crc16-ccitt-false', 'crc16-cdma2000', 'crc16-ibm', 'crc16-modbus', 'crc16-profibus', 'crc24-flexray16-a', 'crc24-flexray16-b', 'crc32', 'crc32-bzip2', 'crc32-c', 'crc64-ecma']
@@ -49,7 +49,7 @@ Examples
 --------
 Using a pre-defined algorithm
 
-.. code-block::
+.. code-block:: python
 
   import crcengine
   crc_algorithm = crcengine.new('crc32-bzip2')
@@ -61,7 +61,7 @@ Output:
 
 Defining an algorithm
 
-.. code-block::
+.. code-block:: python
 
   import crcengine
   crc_openpgp = crcengine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
@@ -85,14 +85,14 @@ Code Generation Example usage:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Generating code into a directory named "out" by passing CRC parameters
 
-.. code-block::
+.. code-block:: python
 
     params = crcengine.get_algorithm_params('crc32')
     crcengine.generate_code(params, 'out/')
 
 or referencing the algorithm by name
 
-.. code-block::
+.. code-block:: python
 
     crcengine.generate_code('crc16-xmodem', 'out/')
 
@@ -106,6 +106,12 @@ Downloading
 .. _github: https://github.com/GardenTools/crcengine
 .. _crcengine.git: https://github.com/GardenTools/crcengine.git
 .. _pypi.org: https://pypi.org/project/crcengine/
+
+Builds
+-------
+CI builds for pull requests are performed on travis_ci_
+ 
+.. _travis_ci: https://travis-ci.com/GardenTools/crcengine
 
 --------
 
