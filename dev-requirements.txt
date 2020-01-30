@@ -34,4 +34,4 @@ virtualenv==16.7.9        # via tox
 wcwidth==0.1.8            # via pytest
 wheel==0.34.1
 wrapt==1.11.2             # via astroid
-zipp==1.1.0               # via importlib-metadata
+zipp==2.1.0               # via importlib-metadata
