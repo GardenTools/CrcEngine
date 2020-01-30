@@ -4,6 +4,12 @@
 .. image:: https://travis-ci.com/GardenTools/CrcEngine.svg?branch=master
         :target: https://travis-ci.com/GardenTools/crcengine
 
+.. image:: https://img.shields.io/pypi/pyversions/CrcEngine.svg
+        :target: https://pypi.python.org/pypi/crcengine
+
+.. image:: https://img.shields.io/pypi/format/CrcEngine.svg
+        :target: https://pypi.python.org/pypi/crcengine
+
 .. image:: https://readthedocs.org/projects/crcengine/badge/?version=latest
         :target: https://crcengine.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
@@ -65,8 +71,8 @@ Defining an algorithm
 
   import crcengine
   crc_openpgp = crcengine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
-                                 ref_out=False, xor_out=0, name='crc-24-openpgp')
-
+                                 ref_out=False, xor_out=0,
+                                 name='crc-24-openpgp')
 
 Code Generation
 ---------------
