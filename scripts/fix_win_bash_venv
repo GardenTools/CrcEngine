@@ -1,7 +1,7 @@
 #!/bin/sh
-# Fix the exported VIRTUAL_ENV created in the bash script by windows-native
-# python. It just appends the win32 path with backslahes which doesn't work
-# in cygwin MSYS2 etc.
+# Fix the exported VIRTUAL_ENV in the virtualenv activate bash script created
+# by windows-native python. It just appends the win32 path with backslashes
+# which doesn't work in cygwin MSYS2 etc.
 
 set -eu
 
