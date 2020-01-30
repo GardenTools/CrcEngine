@@ -14,7 +14,7 @@ with open('HISTORY.rst') as history_file:
 version = {}
 package_root = Path(__file__).resolve().parent
 version_file = package_root.joinpath('src', 'crcengine', 'version.py')
-with open(version_file) as fp:
+with version_file.open('rt') as fp:
     exec(fp.read(), version)
 
 requirements = ['jinja2>=2.7']
@@ -27,13 +27,14 @@ setup(
     author="Garden Tools",
     author_email='gardensofdorwinion@gmail.com',
     # This project uses f-strings
-    python_requires='>=3.6',
+    python_requires='>=3.5',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha'
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',

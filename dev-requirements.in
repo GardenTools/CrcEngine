@@ -1,5 +1,6 @@
 wheel>=0.26
 pip-tools
+Pygments
 pytest>=3
 pytest-cov
 pylint
