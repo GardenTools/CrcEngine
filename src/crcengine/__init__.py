@@ -18,5 +18,7 @@ along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
 from .version import __version__
 from .crcengine import *
-from .algorithms import get_algorithm_params, algorithms_available
+from .algorithms import (
+    get_algorithm_params, algorithms_available, register_algorithm,
+    unregister_algorithm, AlgorithmNotFoundError)
 from .codegen import generate_code

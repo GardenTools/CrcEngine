@@ -185,10 +185,9 @@ def test_crc16_autosar_results(crc16_autosar):
 
 
 def test_available_algorithms():
-    available = crcengine.algorithms_available()
-    assert 'crc32' in available
-    assert 'crc16-xmodem' in available
-    assert 'crc-womble' not in available
+    assert 'crc32' in crcengine.algorithms_available()
+    assert 'crc16-xmodem' in crcengine.algorithms_available()
+    assert 'crc-womble' not in crcengine.algorithms_available()
 
 
 @pytest.mark.parametrize("algorithm_name", crcengine.algorithms_available())
@@ -198,3 +197,15 @@ def test_algorithm_checks(algorithm_name):
     crc_alg = crcengine.new(algorithm_name)
     assert crc_alg(b'123456789') == check_word,\
         'Check CRC mismatch for {}'.format(algorithm_name)
+
+
+def test_custom_algorithm():
+    crcengine.register_algorithm('mycrc8', 0xFFD5, 8, 0, False, 0, 0xFFbc)
+    assert 'mycrc8' in crcengine.algorithms_available()
+    params = crcengine.get_algorithm_params('mycrc8')
+    assert params['poly'] == 0xD5
+    assert params['seed'] == 0
+    crcengine.unregister_algorithm('mycrc8')
+    assert 'mycrc8' not in crcengine.algorithms_available()
+    with pytest.raises(crcengine.AlgorithmNotFoundError):
+        crcengine.get_algorithm_params('mycrc8')

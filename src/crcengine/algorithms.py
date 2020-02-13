@@ -83,6 +83,8 @@ _ALGORITHMS = {
     'crc64-ecma': (0x42F0E1EBA9EA3693, 64, 0, False, False, 0, 0x6c40df5f0b497347),
 }
 
+_registered_algorithms = {}
+
 
 class AlgorithmNotFoundError(Exception):
     """Exception raised when an algorithm is requested that doesn't exist in
@@ -100,8 +102,11 @@ def get_algorithm_params(name, include_check=False):
     """
     try:
         raw_params = _ALGORITHMS[name]
-    except KeyError as e:
-        raise AlgorithmNotFoundError(name) from e
+    except KeyError:
+        try:
+            raw_params = _registered_algorithms[name]
+        except KeyError as e:
+            raise AlgorithmNotFoundError(name) from e
     final = None if include_check else -1
     param_dict = dict(zip(_FIELDS[:final], raw_params[:final]))
     param_dict['name'] = name
@@ -109,5 +114,29 @@ def get_algorithm_params(name, include_check=False):
 
 
 def algorithms_available():
-    """Obtain a list of available named CRC algorithms"""
-    return _ALGORITHMS.keys()
+    """Obtain an iterable of available named CRC algorithms"""
+    yield from _ALGORITHMS.keys()
+    yield from _registered_algorithms.keys()
+
+
+def register_algorithm(name, polynomial, width, seed, reflect, xor_out,
+                       check=0):
+    """Register a CRC algorithm with custom parameters"""
+    poly_mask = (1 << width) - 1
+    _registered_algorithms[name] = (
+        polynomial & poly_mask,
+        width,
+        seed & poly_mask,
+        reflect,
+        reflect,
+        xor_out & poly_mask,
+        check,
+    )
+
+
+def unregister_algorithm(name):
+    """ Remove an algorithm registration"""
+    try:
+        del _registered_algorithms[name]
+    except KeyError as e:
+        raise AlgorithmNotFoundError(e)
