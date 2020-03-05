@@ -57,7 +57,7 @@ webencodings==0.5.1       # via bleach
 wheel==0.34.2
 wrapt==1.12.0             # via astroid
 wrapt==1.11.2             # via astroid
-zipp==1.1.0	# pyup: <2.0
+zipp==1.2.0	# pyup: <2.0
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
