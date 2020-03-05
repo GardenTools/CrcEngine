@@ -40,18 +40,9 @@ requests-toolbelt==0.9.1  # via twine
 requests==2.23.0          # via requests-toolbelt, twine
 six==1.14.0               # via astroid, bleach, packaging, pip-tools, readme-renderer, tox, virtualenv
 toml==0.10.0              # via tox
-<<<<<<< HEAD
 tox==3.14.5
 typed-ast==1.4.1          # via astroid
 virtualenv==20.0.8        # via tox
-=======
-tox==3.14.4
-tqdm==4.43.0              # via twine
-twine==3.1.1
-typed-ast==1.4.1          # via astroid
-urllib3==1.25.8           # via requests
-virtualenv==20.0.3        # via tox
->>>>>>> Having a second attempt at pinning zipp
 wcwidth==0.1.8            # via pytest
 webencodings==0.5.1       # via bleach
 wheel==0.34.2
