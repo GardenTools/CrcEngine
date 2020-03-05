@@ -6,4 +6,7 @@ pytest-cov
 pylint
 tox>=3
 twine
+# zipp is used indirectly by pytest, but supportimg python 3.5 means we have to
+# stick to versions below 2.0
+zipp<2.0
 

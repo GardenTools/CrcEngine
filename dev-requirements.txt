@@ -4,15 +4,23 @@
 #
 #    pip-compile --output-file=dev-requirements.txt dev-requirements.in
 #
+appdirs==1.4.3            # via virtualenv
 astroid==2.3.3            # via pylint
 atomicwrites==1.3.0       # via pytest
 attrs==19.3.0             # via pytest
+bleach==3.1.1             # via readme-renderer
+certifi==2019.11.28       # via requests
+chardet==3.0.4            # via requests
 click==7.0                # via pip-tools
 colorama==0.4.3           # via pylint, pytest, tox
 coverage==5.0.3           # via pytest-cov
-filelock==3.0.12          # via tox
-importlib-metadata==1.5.0  # via pluggy, pytest, tox
+distlib==0.3.0            # via virtualenv
+docutils==0.16            # via readme-renderer
+filelock==3.0.12          # via tox, virtualenv
+idna==2.9                 # via requests
+importlib-metadata==1.5.0  # via keyring, pluggy, pytest, tox, twine, virtualenv
 isort==4.3.21             # via pylint
+keyring==21.1.0           # via twine
 lazy-object-proxy==1.4.3  # via astroid
 mccabe==0.6.1             # via pylint
 more-itertools==8.2.0     # via pytest
@@ -26,14 +34,30 @@ pylint==2.4.4
 pyparsing==2.4.6          # via packaging
 pytest-cov==2.8.1
 pytest==5.3.5
-six==1.14.0               # via astroid, packaging, pathlib2, pip-tools, tox
+pywin32-ctypes==0.2.0     # via keyring
+readme-renderer==24.0     # via twine
+requests-toolbelt==0.9.1  # via twine
+requests==2.23.0          # via requests-toolbelt, twine
+six==1.14.0               # via astroid, bleach, packaging, pip-tools, readme-renderer, tox, virtualenv
 toml==0.10.0              # via tox
+<<<<<<< HEAD
 tox==3.14.5
 typed-ast==1.4.1          # via astroid
 virtualenv==20.0.8        # via tox
+=======
+tox==3.14.4
+tqdm==4.43.0              # via twine
+twine==3.1.1
+typed-ast==1.4.1          # via astroid
+urllib3==1.25.8           # via requests
+virtualenv==20.0.3        # via tox
+>>>>>>> Having a second attempt at pinning zipp
 wcwidth==0.1.8            # via pytest
+webencodings==0.5.1       # via bleach
 wheel==0.34.2
 wrapt==1.12.0             # via astroid
 wrapt==1.11.2             # via astroid
-# via importlib-metadata, version 2.0 is incompatible with python 3.5
-zipp==1.1.0   # pyup:  >=1.1,<2.0
+zipp==1.1.0	# pyup: <2.0
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
