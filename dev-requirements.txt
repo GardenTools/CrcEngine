@@ -11,7 +11,7 @@ click==7.1.1                # via pip-tools
 colorama==0.4.3           # via pylint, pytest, tox
 coverage==5.0.4           # via pytest-cov
 filelock==3.0.12          # via tox
-importlib-metadata==1.5.2  # via pluggy, pytest, tox
+importlib-metadata==1.6.0  # via pluggy, pytest, tox
 isort==4.3.21             # via pylint
 lazy-object-proxy==1.4.3  # via astroid
 mccabe==0.6.1             # via pylint
