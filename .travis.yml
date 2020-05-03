@@ -28,5 +28,5 @@ script:
   - |
     if [[ $TEST_TYPE == 'pylint' ]]; then
       pylint --version
-      pylint pylint --exit-zero src;
+      pylint --exit-zero src;
     fi
