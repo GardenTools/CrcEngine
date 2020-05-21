@@ -26,7 +26,7 @@ pylint==2.5.2
 pyparsing==2.4.7          # via packaging
 pytest-cov==2.8.1
 pytest==5.4.2
-six==1.14.0               # via astroid, packaging, pathlib2, pip-tools, tox
+six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
 toml==0.10.1              # via tox
 tox==3.15.1
 typed-ast==1.4.1          # via astroid
