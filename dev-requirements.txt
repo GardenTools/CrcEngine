@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=dev-requirements.txt dev-requirements.in
 #
-astroid==2.4.1            # via pylint
+astroid==2.4.2            # via pylint
 atomicwrites==1.4.0       # via pytest
 attrs==19.3.0             # via pytest
 click==7.1.2                # via pip-tools
