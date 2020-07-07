@@ -30,7 +30,7 @@ six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
 toml==0.10.1              # via tox
 tox==3.15.2
 typed-ast==1.4.1          # via astroid
-virtualenv==20.0.21        # via tox
+virtualenv==20.0.26        # via tox
 wcwidth==0.2.4            # via pytest
 wheel==0.34.2
 wrapt==1.12.1             # via astroid
