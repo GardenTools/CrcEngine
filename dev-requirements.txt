@@ -9,29 +9,29 @@ atomicwrites==1.4.0       # via pytest
 attrs==19.3.0             # via pytest
 click==7.1.2                # via pip-tools
 colorama==0.4.3           # via pylint, pytest, tox
-coverage==5.1           # via pytest-cov
+coverage==5.2           # via pytest-cov
 filelock==3.0.12          # via tox
-importlib-metadata==1.6.1  # via pluggy, pytest, tox
+importlib-metadata==1.7.0  # via pluggy, pytest, tox
 isort==4.3.21             # via pylint
 lazy-object-proxy==1.5.0  # via astroid
 mccabe==0.6.1             # via pylint
-more-itertools==8.3.0     # via pytest
+more-itertools==8.4.0     # via pytest
 packaging==20.4           # via pytest, tox
 pathlib2==2.3.5           # via pytest
 pip-tools==5.2.1
 pluggy==0.13.1            # via pytest, tox
-py==1.8.1                 # via pytest, tox
+py==1.9.0                 # via pytest, tox
 pygments==2.6.1
 pylint==2.5.3
 pyparsing==2.4.7          # via packaging
-pytest-cov==2.9.0
+pytest-cov==2.10.0
 pytest==5.4.3
 six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
 toml==0.10.1              # via tox
-tox==3.15.2
+tox==3.16.1
 typed-ast==1.4.1          # via astroid
 virtualenv==20.0.26        # via tox
-wcwidth==0.2.4            # via pytest
+wcwidth==0.2.5            # via pytest
 wheel==0.34.2
 wrapt==1.12.1             # via astroid
 # via importlib-metadata, version 2.0 is incompatible with python 3.5
