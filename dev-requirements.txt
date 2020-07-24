@@ -9,7 +9,7 @@ atomicwrites==1.4.0       # via pytest
 attrs==19.3.0             # via pytest
 click==7.1.2                # via pip-tools
 colorama==0.4.3           # via pylint, pytest, tox
-coverage==5.2           # via pytest-cov
+coverage==5.2.1           # via pytest-cov
 filelock==3.0.12          # via tox
 importlib-metadata==1.7.0  # via pluggy, pytest, tox
 isort==4.3.21  # pyup: <5 # via pylint
