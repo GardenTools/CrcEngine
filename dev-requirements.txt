@@ -25,7 +25,7 @@ pygments==2.6.1
 pylint==2.5.3
 pyparsing==2.4.7          # via packaging
 pytest-cov==2.10.0
-pytest==5.4.3
+pytest==6.0.1
 six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
 toml==0.10.1              # via tox
 tox==3.16.1
