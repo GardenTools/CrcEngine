@@ -8,7 +8,7 @@ astroid==2.4.2            # via pylint
 atomicwrites==1.4.0       # via pytest
 attrs==20.2.0             # via pytest
 click==7.1.2                # via pip-tools
-colorama==0.4.3           # via pylint, pytest, tox
+colorama==0.4.4           # via pylint, pytest, tox
 coverage==5.3           # via pytest-cov
 filelock==3.0.12          # via tox
 importlib-metadata==2.0.0  # via pluggy, pytest, tox
