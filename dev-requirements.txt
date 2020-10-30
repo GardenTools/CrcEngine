@@ -15,7 +15,7 @@ importlib-metadata==2.0.0  # via pluggy, pytest, tox
 isort==4.3.21  # pyup: <5 # via pylint
 lazy-object-proxy==1.5.1  # via astroid
 mccabe==0.6.1             # via pylint
-more-itertools==8.5.0     # via pytest
+more-itertools==8.6.0     # via pytest
 packaging==20.4           # via pytest, tox
 pathlib2==2.3.5           # via pytest
 pip-tools==5.3.1
