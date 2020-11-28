@@ -13,7 +13,7 @@ coverage==5.3           # via pytest-cov
 filelock==3.0.12          # via tox
 importlib-metadata==2.0.0  # via pluggy, pytest, tox
 isort==4.3.21  # pyup: <5 # via pylint
-lazy-object-proxy==1.5.1  # via astroid
+lazy-object-proxy==1.5.2  # via astroid
 mccabe==0.6.1             # via pylint
 more-itertools==8.5.0     # via pytest
 packaging==20.4           # via pytest, tox
