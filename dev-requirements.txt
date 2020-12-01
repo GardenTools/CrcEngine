@@ -32,7 +32,7 @@ tox==3.20.1
 typed-ast==1.4.1          # via astroid
 virtualenv==20.1.0        # via tox
 wcwidth==0.2.5            # via pytest
-wheel==0.35.1
+wheel==0.36.0
 wrapt==1.12.1             # via astroid
 # via importlib-metadata, version 2.0 is incompatible with python 3.5
 zipp==1.2.0   # pyup:  >=1.1,<2.0
