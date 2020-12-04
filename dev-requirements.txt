@@ -4,34 +4,35 @@
 #
 #    pip-compile --output-file=dev-requirements.txt dev-requirements.in
 #
-astroid==2.3.3            # via pylint
-atomicwrites==1.3.0       # via pytest
-attrs==19.3.0             # via pytest
-click==7.0                # via pip-tools
-colorama==0.4.3           # via pylint, pytest, tox
-coverage==5.0.3           # via pytest-cov
+astroid==2.4.2            # via pylint
+atomicwrites==1.4.0       # via pytest
+attrs==20.3.0             # via pytest
+click==7.1.2                # via pip-tools
+colorama==0.4.4           # via pylint, pytest, tox
+coverage==5.3           # via pytest-cov
 filelock==3.0.12          # via tox
-importlib-metadata==1.5.0  # via pluggy, pytest, tox
-isort==4.3.21             # via pylint
-lazy-object-proxy==1.4.3  # via astroid
+importlib-metadata==3.1.1  # via pluggy, pytest, tox
+isort==4.3.21  # pyup: <5 # via pylint
+lazy-object-proxy==1.5.2  # via astroid
 mccabe==0.6.1             # via pylint
-more-itertools==8.2.0     # via pytest
-packaging==20.1           # via pytest, tox
+more-itertools==8.6.0     # via pytest
+packaging==20.7           # via pytest, tox
 pathlib2==2.3.5           # via pytest
-pip-tools==4.4.1
+pip-tools==5.4.0
 pluggy==0.13.1            # via pytest, tox
-py==1.8.1                 # via pytest, tox
-pygments==2.5.2
-pylint==2.4.4
-pyparsing==2.4.6          # via packaging
-pytest-cov==2.8.1
-pytest==5.3.5
-six==1.14.0               # via astroid, packaging, pathlib2, pip-tools, tox
-toml==0.10.0              # via tox
-tox==3.14.3
+py==1.9.0                 # via pytest, tox
+pygments==2.7.2
+pylint==2.6.0
+pyparsing==2.4.7          # via packaging
+pytest-cov==2.10.1
+pytest==6.1.2
+six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
+toml==0.10.2              # via tox
+tox==3.20.1
 typed-ast==1.4.1          # via astroid
-virtualenv==16.7.9        # via tox
-wcwidth==0.1.8            # via pytest
-wheel==0.34.2
-wrapt==1.11.2             # via astroid
-zipp==1.1.0               # via importlib-metadata
+virtualenv==20.2.1        # via tox
+wcwidth==0.2.5            # via pytest
+wheel==0.36.1
+wrapt==1.12.1             # via astroid
+# via importlib-metadata, version 2.0 is incompatible with python 3.5
+zipp==1.2.0   # pyup:  >=1.1,<2.0

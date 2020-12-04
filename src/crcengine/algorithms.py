@@ -139,4 +139,4 @@ def unregister_algorithm(name):
     try:
         del _registered_algorithms[name]
     except KeyError as e:
-        raise AlgorithmNotFoundError(e)
+        raise AlgorithmNotFoundError from e
