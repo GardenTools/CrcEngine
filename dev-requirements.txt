@@ -28,7 +28,7 @@ pytest-cov==2.10.1
 pytest==6.1.2
 six==1.15.0               # via astroid, packaging, pathlib2, pip-tools, tox
 toml==0.10.2              # via tox
-tox==3.20.1
+tox==3.21.1
 typed-ast==1.4.1          # via astroid
 virtualenv==20.2.1        # via tox
 wcwidth==0.2.5            # via pytest
