@@ -19,7 +19,7 @@ docutils==0.16            # via readme-renderer
 filelock==3.0.12          # via tox, virtualenv
 idna==2.10                # via requests
 iniconfig==1.1.1          # via pytest
-isort==4.3.21             # via -r dev-requirements.in, pylint
+isort==5.7.0             # via -r dev-requirements.in, pylint
 keyring==21.8.0           # via twine
 lazy-object-proxy==1.4.3  # via astroid
 mccabe==0.6.1             # via pylint
