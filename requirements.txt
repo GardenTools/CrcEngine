@@ -4,5 +4,5 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-jinja2==2.11.2            # via -r requirements.in
+jinja2==2.11.3            # via -r requirements.in
 markupsafe==1.1.1         # via -r requirements.in, jinja2
