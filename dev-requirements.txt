@@ -40,7 +40,7 @@ requests==2.25.1          # via requests-toolbelt, twine
 rfc3986==1.4.0            # via twine
 six==1.15.0               # via astroid, bleach, readme-renderer, tox, virtualenv
 toml==0.10.2              # via pylint, pytest, tox
-tox==3.21.4               # via -r dev-requirements.in
+tox==3.22.0               # via -r dev-requirements.in
 tqdm==4.56.2              # via twine
 twine==3.3.0              # via -r dev-requirements.in
 urllib3==1.26.3           # via requests
