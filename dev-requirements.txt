@@ -29,7 +29,7 @@ pkginfo==1.7.0            # via twine
 pluggy==0.13.1            # via pytest, tox
 py==1.10.0                # via pytest, tox
 pygments==2.8.0           # via -r dev-requirements.in, readme-renderer
-pylint==2.6.0             # via -r dev-requirements.in
+pylint==2.7.1             # via -r dev-requirements.in
 pyparsing==2.4.7          # via packaging
 pytest-cov==2.11.1        # via -r dev-requirements.in
 pytest==6.2.2             # via -r dev-requirements.in, pytest-cov
