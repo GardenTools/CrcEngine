@@ -17,7 +17,7 @@ coverage==5.4             # via pytest-cov
 distlib==0.3.1            # via virtualenv
 docutils==0.16            # via readme-renderer
 filelock==3.0.12          # via tox, virtualenv
-idna==2.10                # via requests
+idna==3.1                # via requests
 iniconfig==1.1.1          # via pytest
 isort==4.3.21             # via -r dev-requirements.in, pylint
 keyring==22.0.1           # via twine
