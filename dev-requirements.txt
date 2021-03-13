@@ -24,7 +24,7 @@ keyring==22.3.0           # via twine
 lazy-object-proxy==1.5.2  # via astroid
 mccabe==0.6.1             # via pylint
 packaging==20.9           # via bleach, pytest, tox
-pip-tools==5.5.0          # via -r dev-requirements.in
+pip-tools==6.0.0          # via -r dev-requirements.in
 pkginfo==1.7.0            # via twine
 pluggy==0.13.1            # via pytest, tox
 py==1.10.0                # via pytest, tox
