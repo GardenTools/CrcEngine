@@ -1,5 +1,4 @@
 wheel>=0.26
-isort<5  # this comes from pylint
 pip-tools
 Pygments
 pytest>=3
