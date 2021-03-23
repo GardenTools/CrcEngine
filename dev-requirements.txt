@@ -22,7 +22,7 @@ importlib-metadata==3.7.3  # via keyring
 iniconfig==1.1.1          # via pytest
 isort==5.7.0              # via pylint
 keyring==23.0.0           # via twine
-lazy-object-proxy==1.5.2  # via astroid
+lazy-object-proxy==1.6.0  # via astroid
 mccabe==0.6.1             # via pylint
 packaging==20.9           # via bleach, pytest, tox
 pip-tools==6.0.0          # via -r dev-requirements.in
