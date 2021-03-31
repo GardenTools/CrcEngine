@@ -21,7 +21,7 @@ idna==2.10                # via requests
 importlib-metadata==3.10.0  # via keyring
 iniconfig==1.1.1          # via pytest
 isort==5.7.0              # via pylint
-keyring==23.0.0           # via twine
+keyring==23.0.1           # via twine
 lazy-object-proxy==1.5.2  # via astroid
 mccabe==0.6.1             # via pylint
 packaging==20.9           # via bleach, pytest, tox
