@@ -80,7 +80,7 @@ pygments==2.8.1
     # via
     #   -r dev-requirements.in
     #   readme-renderer
-pylint==2.7.2
+pylint==2.7.4
     # via -r dev-requirements.in
 pyparsing==2.4.7
     # via packaging
