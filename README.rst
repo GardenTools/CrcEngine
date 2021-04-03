@@ -109,13 +109,18 @@ Downloading
 .. _crcengine.git: https://github.com/GardenTools/crcengine.git
 .. _pypi.org: https://pypi.org/project/crcengine/
 
-Builds
--------
-CI builds for pull requests are performed on travis_ci_
- 
-.. _travis_ci: https://travis-ci.com/GardenTools/crcengine
+Running the tests
+-------------------------
+Tests can be performed directly by executing pytest in the "tests" directory
 
---------
+Running the Codegen tests
+-------------------------
+The codegen tests make use of ceedling_ which is expected to be installed as a ruby gem.
+The unit tests are configured to compile with gcc.
+
+.. _ceedling: https://github.com/ThrowTheSwitch/Ceedling
+
+-------
 
 With thanks to Greg Cook for providing such a thoroughly collated list of
 `CRC definitions`_
