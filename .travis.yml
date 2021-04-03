@@ -4,6 +4,12 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
+
+# Don't build pyup bot's branches, just the pull requests (hopefully)
+branches:
+    except:
+        - /^pyup-update-.*$/
 
 # Don't build pyup bot's branches, just the pull requests (hopefully)
 branches:
