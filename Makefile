@@ -61,8 +61,8 @@ clean-build: ## remove build artifacts
 	rm -rf build/
 	rm -rf dist/
 	rm -rf .eggs/
-	find . -name '*.egg-info' -exec rm -rf {} +
-	find . -name '*.egg' -exec rm -f {} +
+	-find . -name '*.egg-info' -exec rm -rf {} +
+	-find . -name '*.egg' -exec rm -f {} +
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +

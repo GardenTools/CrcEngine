@@ -1,0 +1,23 @@
+#include "unity.h"
+#include <string.h>
+{% for include in c_includes %}
+{{include}}
+{% endfor %}
+
+#include "{{header_file}}"
+
+void setUp(void)
+{
+}
+
+void tearDown(void)
+{
+}
+
+void test_{{test_name}}(void)
+{
+  const char* check_string = {{check_string}};
+  size_t check_length = strlen(check_string);
+  {{crc_datatype}} result = {{crc_function}}((const uint8_t*)check_string, check_length);
+  {{comparison}}({{expected_value}}, result);
+}

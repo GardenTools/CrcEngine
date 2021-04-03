@@ -3,6 +3,7 @@
 {% for include in c_includes %}
 {{include}}
 {% endfor %}
+#include <stdio.h>
 #include "{{header_file}}"
 
 {% if xor_out is defined -%}
@@ -41,6 +42,9 @@ static const {{crc_datatype}} {{table_name}}[] = {
     {
         uint8_t byte_val = data[i];
         crc = (crc {{shift_op}} 8) ^ {{table_name}}[{{ select_lu_byte('crc') }} ^ byte_val];
+{%if requires_result_mask %}
+        crc &= {{result_mask}};
+{% endif %}
     }
     return {{return_expression}};
 }
