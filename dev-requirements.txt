@@ -49,7 +49,7 @@ importlib-metadata==3.10.0
     #   virtualenv
 iniconfig==1.1.1
     # via pytest
-isort==5.7.0
+isort==5.8.0
     # via pylint
 keyring==23.0.1
     # via twine
