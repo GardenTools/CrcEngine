@@ -11,6 +11,11 @@ branches:
     except:
         - /^pyup-update-.*$/
 
+# Don't build pyup bot's branches, just the pull requests (hopefully)
+branches:
+    except:
+        - /^pyup-update-.*$/
+
 install:
   - pip install -r requirements.txt -r dev-requirements.txt
   - pip install -e .
