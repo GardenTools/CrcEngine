@@ -1,2 +1,11 @@
+wheel>=0.26
+build
 jinja2
-markupsafe
+pip-tools
+Pygments # needed for the docs
+pytest>=3
+pytest-cov
+pylint
+tox>=3
+twine
+
