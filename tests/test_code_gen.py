@@ -43,9 +43,6 @@ def generate_tests():
         crcengine.codegen.generate_test(alg, join(C_TEST_HOME, "test"))
 
 def test_code_gen():
-    os.environ["PATH"] += r"C:\msys64\usr\bin"
-    print(os.environ["PATH"])
-
     completed = subprocess.run(["ceedling",
                                 "test:all"],
                                stdout=subprocess.PIPE,
