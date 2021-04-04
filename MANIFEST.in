@@ -12,7 +12,6 @@ include .pylintrc
 include .travis.yml
 
 recursive-include examples *
-recursive-include tests *
 recursive-include src/crcengine/templates *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

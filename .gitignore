@@ -13,3 +13,4 @@ testenv/
 *.rst~
 *.swp
 *.in~
+/venv*
