@@ -26,8 +26,8 @@ class _CrcLsbf:
     """Least-significant-bit first calculation of a CRC. Implies a ref_in
     calculations was specified with new data being shifted in from the MSB end
      of the calculation register"""
-    def __init__(self, table, width, seed, xor_out=0, reverse_result=False,
-                 name=''):
+
+    def __init__(self, table, width, seed, xor_out=0, reverse_result=False, name=""):
         self._table = table
         self._seed = seed
         self._width = width
@@ -37,15 +37,14 @@ class _CrcLsbf:
         self.name = name
 
     def calculate(self, data):
-        """ Perform CRC calculation on data
+        """Perform CRC calculation on data
 
         :param data: a string of bytes
         :return: integer calculated CRC
         """
         crc = self._seed
         for byte in data:
-            crc = ((crc >> 8) ^
-                   self._table[(crc & 0xFF) ^ byte])
+            crc = (crc >> 8) ^ self._table[(crc & 0xFF) ^ byte]
             crc &= self._result_mask
         if self._reverse_result:
             # This is a weird corner case where the output is reflected but the
@@ -60,8 +59,8 @@ class _CrcLsbf:
 
 class _CrcMsbf:
     """Most-significant-bit-first table-driven CRC calculation"""
-    def __init__(self, table, width, seed, xor_out=0, reverse_result=False,
-                 name=''):
+
+    def __init__(self, table, width, seed, xor_out=0, reverse_result=False, name=""):
         self._table = table
         self._seed = seed
         self._width = width
@@ -72,15 +71,14 @@ class _CrcMsbf:
         self.name = name
 
     def calculate(self, data):
-        """ Calculate a CRC on data
+        """Calculate a CRC on data
 
         :param data: bytes string
         :return: calculated CRC
         """
         remainder = self._seed
         for value in data:
-            remainder = ((remainder << 8) ^
-                         self._table[(remainder >> self._msb_lshift) ^ value])
+            remainder = (remainder << 8) ^ self._table[(remainder >> self._msb_lshift) ^ value]
             remainder &= self._result_mask
         if self._reverse_result:
             remainder = bit_reverse_n(remainder, self._width)
@@ -92,8 +90,8 @@ class _CrcMsbf:
 
 class _CrcGeneric:
     """Generic most-significant-bit-first table-driven CRC calculation"""
-    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0,
-                 name=''):
+
+    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=""):
         self._poly = poly
         self._width = width
         self._seed = seed
@@ -106,7 +104,7 @@ class _CrcGeneric:
         self.name = name
 
     def calculate(self, data, seed=None):
-        """ Calculate CRC of data
+        """Calculate CRC of data
 
         :param data: byte string
         :param seed: optional seed value
@@ -120,7 +118,7 @@ class _CrcGeneric:
             if self._ref_in:
                 reflect_byte = _REV8BITS[byte]
                 byte = reflect_byte
-            crc ^= (byte << self._msb_lshift)
+            crc ^= byte << self._msb_lshift
             for _ in range(8):
                 if crc & self._msbit:
                     crc = (crc << 1) ^ self._poly
@@ -141,7 +139,8 @@ class _CrcGenericLsbf:
      reference, since the other algorithms cover all useful calculation
       combinations
     """
-    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=''):
+
+    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=""):
         self._poly = poly
         self._width = width
         self._seed = seed
@@ -154,7 +153,7 @@ class _CrcGenericLsbf:
         self.name = name
 
     def calculate(self, data, seed=None):
-        """ Calculate a CRC on data
+        """Calculate a CRC on data
 
         :param data: bytes string whose CRC will be calculated
         :param seed: Optional seed
@@ -195,9 +194,8 @@ def new(name):
     return create(**params)
 
 
-def create(poly, width, seed, ref_in=True, ref_out=True, name='',
-           xor_out=0xFFFFFF):
-    """ Create a table-driven CRC calculation engine
+def create(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF):
+    """Create a table-driven CRC calculation engine
 
     :param poly: polynomial
     :param width: polynomial width in bits
@@ -210,21 +208,17 @@ def create(poly, width, seed, ref_in=True, ref_out=True, name='',
     """
     if ref_in:
         table = create_lsb_table(poly, width)
-        algorithm = _CrcLsbf(table, width, seed,
-                             reverse_result=(ref_in != ref_out),
-                             xor_out=xor_out,
-                             name=name)
+        algorithm = _CrcLsbf(
+            table, width, seed, reverse_result=(ref_in != ref_out), xor_out=xor_out, name=name
+        )
     else:
         table = create_msb_table(poly, width)
-        algorithm = _CrcMsbf(table, width, seed,
-                             reverse_result=ref_out,
-                             xor_out=xor_out, name=name)
+        algorithm = _CrcMsbf(table, width, seed, reverse_result=ref_out, xor_out=xor_out, name=name)
     return algorithm
 
 
-def create_generic(poly, width, seed, ref_in=True, ref_out=True,
-                   name='', xor_out=0xFFFFFF):
-    """ Create generic non-table-driven CRC calculator
+def create_generic(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF):
+    """Create generic non-table-driven CRC calculator
 
     :param poly: Polynomial
     :param width: calculator width in bits e.g. 32
@@ -235,21 +229,22 @@ def create_generic(poly, width, seed, ref_in=True, ref_out=True,
     :param xor_out: pattern to XOR into result
     :return: A CRC calculation engine
     """
-    return _CrcGeneric(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
-                       xor_out=xor_out, name=name)
+    return _CrcGeneric(
+        poly, width, seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
+    )
 
 
-def create_generic_lsbf(poly, width, seed, ref_in=True, ref_out=True,
-                        name='', xor_out=0xFFFFFF):
+def create_generic_lsbf(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF):
     """Create a CRC calculation engine that uses the Least-significant first
     algorithm, but does not reflect the polynomial. If you use this, reflect
     the polynomial before passing it in"""
-    return _CrcGenericLsbf(poly, width, seed, ref_in=ref_in, ref_out=ref_out,
-                           xor_out=xor_out, name=name)
+    return _CrcGenericLsbf(
+        poly, width, seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
+    )
 
 
 def create_msb_table_individual(poly, width):
-    """ Generate a CRC table calculating each entry.
+    """Generate a CRC table calculating each entry.
         Mainly for demonstration and test, since calculate_msb_table() is
         much more efficient at calculating the same information
     :return: Generated table
@@ -270,7 +265,7 @@ def create_msb_table_individual(poly, width):
 
 
 def create_msb_table(poly, width):
-    """ Calculate a CRC lookup table for the selected algorithm definition
+    """Calculate a CRC lookup table for the selected algorithm definition
     :return: list of CRC values
     """
     ms_bit = 1 << (width - 1)
@@ -311,7 +306,7 @@ def create_msb_table(poly, width):
 
 
 def create_lsb_table(poly, width):
-    """ Calculate a CRC lookup table for the selected algorithm definition
+    """Calculate a CRC lookup table for the selected algorithm definition
     producing a table that can be used for the lsbit algorithm
 
     :return: table of reflected
@@ -359,7 +354,7 @@ def bit_reverse_byte(byte):
 
 
 def bit_reverse_n(value, num_bits):
-    """ Mirror the bits in an integer
+    """Mirror the bits in an integer
 
     :param value: the integer to reverse
     :param num_bits: the number of bits  to reverse
@@ -379,7 +374,7 @@ def bit_reverse_n(value, num_bits):
 
 def get_maximum_value(nbits):
     """Convenience function returning largest unsigned integer for a given
-     number of bits"""
+    number of bits"""
     return (1 << nbits) - 1
 
 
