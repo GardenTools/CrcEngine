@@ -7,11 +7,18 @@ import crcengine.codegen as codegen
 
 
 def main():
+    """Main entry point for command line"""
     parser = make_arg_parser()
     process_cmdline(parser)
 
 
 def process_cmdline(parser, args=None):
+    """Process command line arguments
+
+    :param parser: Argparse parser
+    :param args: commandline arguments to process (None will default to reading sys.argv)
+    :return:
+    """
     args = parser.parse_args(args)
     if args.command == "calculate":
         do_calculate(args)
@@ -23,9 +30,12 @@ def process_cmdline(parser, args=None):
 
 
 def make_arg_parser():
+    """Create the ArgumentParser for crcengine
+
+    :return:
+    """
     parser = argparse.ArgumentParser(
-        prog="crcengine",
-        description="Calculate CRCs for data or generate CRC calculation code."
+        prog="crcengine", description="Calculate CRCs for data or generate CRC calculation code."
     )
     subparsers = parser.add_subparsers(dest="command")
     calculate = _add_calculate_parser(subparsers)
@@ -35,6 +45,11 @@ def make_arg_parser():
 
 
 def _add_shared_options(parsers):
+    """Add the shared options to multiple parsers
+
+    :param parsers: iterable of sub-command Argparse parsers
+    :return:
+    """
     for sub_parser in parsers:
         sub_parser.add_argument(
             "-a",
@@ -47,21 +62,18 @@ def _add_shared_options(parsers):
 
 
 def _add_generate_parser(subparsers):
-    generate = subparsers.add_parser(
-        "generate",
-        help="Generate C code to calculate a specific CRC"
-    )
-    generate.add_argument(
-        "-d",
-        metavar="DIRECTORY",
-        dest="output_dir",
-        help="Output directory"
-
-    )
+    """Add parser for generate command"""
+    generate = subparsers.add_parser("generate", help="Generate C code to calculate a specific CRC")
+    generate.add_argument("-d", metavar="DIRECTORY", dest="output_dir", help="Output directory")
     return generate
 
 
 def _add_calculate_parser(subparsers):
+    """Add parser for calculate command
+
+    :param subparsers: subparsers as returned from add_subparsers()
+    :return:
+    """
     calculate = subparsers.add_parser(
         "calculate",
         help="Calculate CRC of input",
@@ -73,31 +85,29 @@ def _add_calculate_parser(subparsers):
     grp.add_argument(
         "-s", action="store", metavar="STRING", dest="string", help="Calculate CRC of STRING"
     )
-    grp.add_argument(
-        "--stdin", action="store_true", help="Read input from STDIN"
-    )
-    calculate.add_argument(
-        "--hex-prefix",
-        action="store_true",
-        help="Prefix result with 0x"
-
-    )
+    grp.add_argument("--stdin", action="store_true", help="Read input from STDIN")
+    calculate.add_argument("--hex-prefix", action="store_true", help="Prefix result with 0x")
     return calculate
 
 
-'''
-def read_in_chunks(file_object, chunk_size=1024):
-    """Lazy function (generator) to read a file piece by piece.
-    Default chunk size: 1k."""
-    while True:
-        data = file_object.read(chunk_size)
-        if not data:
-            break
-        yield data
-'''
+# '''
+# def read_in_chunks(file_object, chunk_size=1024):
+#     """Lazy function (generator) to read a file piece by piece.
+#     Default chunk size: 1k."""
+#     while True:
+#         data = file_object.read(chunk_size)
+#         if not data:
+#             break
+#         yield data
+# '''
 
 
 def do_calculate(args):
+    """Perform the calculate command
+
+    :param args: arguments as produced by parse_args()
+    :return:
+    """
     algo = crcengine.new(args.algorithm)
     prefix = "0x" if args.hex_prefix else ""
     if args.string:
@@ -113,6 +123,11 @@ def do_calculate(args):
 
 
 def do_generate(args):
+    """Perform the generate command
+
+    :param args:  arguments as produced by parse_args()
+    :return:
+    """
     codegen.generate_code(args.algorithm, output_dir=args.output_dir)
 
 
