@@ -2,6 +2,21 @@
 History
 =======
 
+0.3.0 (2021-04-05)
+------------------
+* Fixed code generation for algorithms whose result doesn't wholly fill a data-type
+* Added unit tests for generated C, run using Ceedling_
+* Added command-line entry point
+* Added support for invoking as a module via python -m
+* Switched over to using setup.cfg rather than setup.py
+* Python 3.9 support added
+
+.. _Ceedling: https://github.com/ThrowTheSwitch/Ceedling
+
+0.2.0  (2020-01-30)
+-------------------
+Added Sphinx documentation
+
 0.1.1 (2019-11-19)
 ------------------
 Addressing dependency issues when installing package in some environments
