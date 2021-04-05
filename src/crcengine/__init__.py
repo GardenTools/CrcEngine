@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
 from .version import __version__
-from .crcengine import *
+from .calc import *
 from .algorithms import (
     get_algorithm_params, algorithms_available, register_algorithm,
     unregister_algorithm, AlgorithmNotFoundError)
