@@ -21,35 +21,39 @@ import sys
 
 import pytest
 
-C_TEST_HOME = join(os.path.dirname(__file__), 'c_tests')
+C_TEST_HOME = join(os.path.dirname(__file__), "c_tests")
+
 
 @pytest.fixture(autouse=True)
 def _generate_algorithms():
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating code for", alg)
-        crcengine.generate_code(alg, join(C_TEST_HOME, 'src'))
+        crcengine.generate_code(alg, join(C_TEST_HOME, "src"))
 
 
 def generate_tests():
     """Generate the test files for generated code, normally these are checked
-     in so that the introduction of a regression in enumeration of algorithms
-     (for example) won't affect the tests run unless they are explicitly
-      regenerated"""
+    in so that the introduction of a regression in enumeration of algorithms
+    (for example) won't affect the tests run unless they are explicitly
+     regenerated"""
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating code for", alg)
-        crcengine.generate_code(alg, join(C_TEST_HOME, 'src'))
+        crcengine.generate_code(alg, join(C_TEST_HOME, "src"))
         crcengine.codegen.generate_test(alg, join(C_TEST_HOME, "test"))
 
+
+@pytest.mark.needs_ceedling
 def test_code_gen():
-    completed = subprocess.run(["ceedling",
-                                "test:all"],
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               shell=True,
-                               cwd=C_TEST_HOME,
-                               universal_newlines=True)
+    completed = subprocess.run(
+        ["ceedling", "test:all"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+        cwd=C_TEST_HOME,
+        universal_newlines=True,
+    )
     print(completed.returncode)
     print(completed.stdout)
     print(completed.stderr, file=sys.stderr)
