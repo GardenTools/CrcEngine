@@ -18,7 +18,7 @@
 ifeq ($(OS),Windows_NT)
     SYS_PY3:=py -3
     TESTENV_BIN:=testenv/Scripts
-    FIX_WIN_VENV=scripts/fix_win_venv $(1)
+    FIX_WIN_VENV=scripts/fix_win_bash_venv $(1)
 else
     SYS_PY3:=python3
     TESTENV_BIN:=testenv/bin
@@ -85,13 +85,13 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 # Use make -B testenv to force an update
-testenv: requirements.txt dev-requirements.txt ## Build test virtualenv
+testenv: requirements.txt ## Build test virtualenv
 	echo $@
 	$(SYS_PY3) -m venv testenv ; \
 	$(call FIX_WIN_VENV, $@) ; \
 	. $(TESTENV_BIN)/activate ; \
 	python -m pip install --upgrade pip; \
-	pip install -r requirements.txt -r dev-requirements.txt
+	pip install -r requirements.txt
 
 .PHONY: coverage-text
 coverage-text: ## Run tests with coverage text output
@@ -112,11 +112,18 @@ release-test: dist ## package and upload a release
 
 .PHONY: dist
 dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python -m build
 	ls -l dist
 
 .PHONY: install
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
+UPDATE_REQS=pip-compile -q -U --output-file=requirements.txt requirements.in
+
+.PHONY: update_requirements
+update_requirements:
+	$(call UPDATE_REQS)
+
+requirements.txt: requirements.in
+	$(call UPDATE_REQS)
