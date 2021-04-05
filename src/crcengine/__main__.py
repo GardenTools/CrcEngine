@@ -35,7 +35,8 @@ def make_arg_parser():
     :return:
     """
     parser = argparse.ArgumentParser(
-        prog="crcengine", description="Calculate CRCs for data or generate CRC calculation code."
+        prog="crcengine",
+        description="Calculate CRCs for data or generate CRC calculation code.",
     )
     subparsers = parser.add_subparsers(dest="command")
     calculate = _add_calculate_parser(subparsers)
@@ -63,8 +64,12 @@ def _add_shared_options(parsers):
 
 def _add_generate_parser(subparsers):
     """Add parser for generate command"""
-    generate = subparsers.add_parser("generate", help="Generate C code to calculate a specific CRC")
-    generate.add_argument("-d", metavar="DIRECTORY", dest="output_dir", help="Output directory")
+    generate = subparsers.add_parser(
+        "generate", help="Generate C code to calculate a specific CRC"
+    )
+    generate.add_argument(
+        "-d", metavar="DIRECTORY", dest="output_dir", help="Output directory"
+    )
     return generate
 
 
@@ -83,10 +88,16 @@ def _add_calculate_parser(subparsers):
         "-f", action="store", metavar="FILE", dest="file", help="Calculate CRC for FILE"
     )
     grp.add_argument(
-        "-s", action="store", metavar="STRING", dest="string", help="Calculate CRC of STRING"
+        "-s",
+        action="store",
+        metavar="STRING",
+        dest="string",
+        help="Calculate CRC of STRING",
     )
     grp.add_argument("--stdin", action="store_true", help="Read input from STDIN")
-    calculate.add_argument("--hex-prefix", action="store_true", help="Prefix result with 0x")
+    calculate.add_argument(
+        "--hex-prefix", action="store_true", help="Prefix result with 0x"
+    )
     return calculate
 
 

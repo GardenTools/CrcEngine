@@ -17,4 +17,3 @@ if __name__ == '__main__':
     crc16x = crcengine.new("crc16-xmodem")
     result = crc16x.calculate(data)
     print("\nThe crc16-xmodem of {} is 0x{:x}".format(data.decode("ascii"), result))
-

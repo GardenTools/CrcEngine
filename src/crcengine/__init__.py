@@ -16,9 +16,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
+
 from .version import __version__
-from .calc import *
+from .calc import (
+    new,
+    create,
+    create_generic,
+    create_msb_table,
+    create_lsb_table,
+    bit_reverse_byte,
+    bit_reverse_n,
+    get_bits_max_value,
+)
 from .algorithms import (
-    get_algorithm_params, algorithms_available, register_algorithm,
-    unregister_algorithm, AlgorithmNotFoundError)
-from .codegen import generate_code
+    get_algorithm_params,
+    algorithms_available,
+    register_algorithm,
+    unregister_algorithm,
+    AlgorithmNotFoundError,
+)
+from .codegen import generate_code, generate_test

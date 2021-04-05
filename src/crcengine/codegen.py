@@ -153,7 +153,7 @@ def _get_templates_dir():
 
 
 def _get_datatype_bits(width):
-    """ Return the number of  bits required for the smallest data-type that
+    """Return the number of  bits required for the smallest data-type that
      will accommodate a certain number of bits for a value
 
     :param width: Number of bits that can represent the desired datatype
@@ -188,7 +188,12 @@ def _ensure_directory(output_dir):
 
 
 def _make_text_from_table(
-    table, max_width=79, value_width=8, indent_width=4, number_prefix="0x", number_suffix="u"
+    table,
+    max_width=79,
+    value_width=8,
+    indent_width=4,
+    number_prefix="0x",
+    number_suffix="u",
 ):
     """Generate the text values for a CRC lookup table
 
@@ -208,7 +213,10 @@ def _make_text_from_table(
     ]
     txt = spacer.join(elements)
     wrapper = textwrap.TextWrapper(
-        width=max_width, initial_indent=indent, subsequent_indent=indent, break_long_words=False
+        width=max_width,
+        initial_indent=indent,
+        subsequent_indent=indent,
+        break_long_words=False,
     )
     wtext = wrapper.wrap(txt)
     return wtext

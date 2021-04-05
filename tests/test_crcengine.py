@@ -20,7 +20,7 @@ from crcengine import get_algorithm_params, bit_reverse_n
 
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params("crc32")["poly"]
-_U32_MAX = crcengine.get_maximum_value(32)
+_U32_MAX = crcengine.get_bits_max_value(32)
 
 
 @pytest.fixture
@@ -79,7 +79,7 @@ def test_crc32_generic():
 def test_crc32_generic_lsb():
     poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
-    crc32_generic = crcengine.create_generic_lsbf(
+    crc32_generic = crcengine.calc.create_generic_lsbf(
         poly, 32, _U32_MAX, ref_in=False, ref_out=False, xor_out=_U32_MAX
     )
     assert crc32_generic.calculate(b"A") == 0xD3D99E8B
@@ -87,7 +87,7 @@ def test_crc32_generic_lsb():
 
 
 def test_generate_crc32_table_individual():
-    table = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
+    table = crcengine.calc.create_msb_table_individual(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x04C11DB7
@@ -116,7 +116,7 @@ def test_generate_crc32_lsb_table():
 
 
 def test_generate_crc32_msb_table_individual():
-    table = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
+    table = crcengine.calc.create_msb_table_individual(_CRC32_POLY, 32)
     assert table[0] == 0
     # the table entry of 1 should always be the polynomial
     assert table[1] == 0x04C11DB7
@@ -143,7 +143,7 @@ def test_crc32_bzip2():
 
 
 def test_tables_crosscheck():
-    table1 = crcengine.create_msb_table_individual(_CRC32_POLY, 32)
+    table1 = crcengine.calc.create_msb_table_individual(_CRC32_POLY, 32)
     table2 = crcengine.create_msb_table(_CRC32_POLY, 32)
     for n, (val1, val2) in enumerate(zip(table1, table2)):
         assert val1 == val2, "Mismatch for entry {}".format(n)

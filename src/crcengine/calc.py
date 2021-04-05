@@ -17,8 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
-from __future__ import generator_stop
-
 from .algorithms import get_algorithm_params
 
 
@@ -78,7 +76,9 @@ class _CrcMsbf:
         """
         remainder = self._seed
         for value in data:
-            remainder = (remainder << 8) ^ self._table[(remainder >> self._msb_lshift) ^ value]
+            remainder = (remainder << 8) ^ self._table[
+                (remainder >> self._msb_lshift) ^ value
+            ]
             remainder &= self._result_mask
         if self._reverse_result:
             remainder = bit_reverse_n(remainder, self._width)
@@ -89,7 +89,11 @@ class _CrcMsbf:
 
 
 class _CrcGeneric:
-    """Generic most-significant-bit-first table-driven CRC calculation"""
+    """
+    Generic most-significant-bit-first table-driven CRC calculation, allows
+    unusual (and probably not useful) combinations of parameters such as
+    reflecting the input without reflecting the output
+    """
 
     def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=""):
         self._poly = poly
@@ -209,15 +213,24 @@ def create(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFF
     if ref_in:
         table = create_lsb_table(poly, width)
         algorithm = _CrcLsbf(
-            table, width, seed, reverse_result=(ref_in != ref_out), xor_out=xor_out, name=name
+            table,
+            width,
+            seed,
+            reverse_result=(ref_in != ref_out),
+            xor_out=xor_out,
+            name=name,
         )
     else:
         table = create_msb_table(poly, width)
-        algorithm = _CrcMsbf(table, width, seed, reverse_result=ref_out, xor_out=xor_out, name=name)
+        algorithm = _CrcMsbf(
+            table, width, seed, reverse_result=ref_out, xor_out=xor_out, name=name
+        )
     return algorithm
 
 
-def create_generic(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF):
+def create_generic(
+    poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF
+):
     """Create generic non-table-driven CRC calculator
 
     :param poly: Polynomial
@@ -234,7 +247,9 @@ def create_generic(poly, width, seed, ref_in=True, ref_out=True, name="", xor_ou
     )
 
 
-def create_generic_lsbf(poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF):
+def create_generic_lsbf(
+    poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF
+):
     """Create a CRC calculation engine that uses the Least-significant first
     algorithm, but does not reflect the polynomial. If you use this, reflect
     the polynomial before passing it in"""
@@ -372,11 +387,11 @@ def bit_reverse_n(value, num_bits):
     return result
 
 
-def get_maximum_value(nbits):
+def get_bits_max_value(nbits):
     """Convenience function returning largest unsigned integer for a given
     number of bits"""
     return (1 << nbits) - 1
 
 
 # Table of bit-reversed bytes, initialised on loading
-_REV8BITS = [bit_reverse_byte(n) for n in range(256)]
+_REV8BITS = [bit_reverse_byte(_n) for _n in range(256)]
