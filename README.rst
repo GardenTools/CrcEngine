@@ -1,8 +1,11 @@
 .. image:: https://img.shields.io/pypi/v/crcengine.svg
         :target: https://pypi.python.org/pypi/crcengine
 
-.. image:: https://travis-ci.com/GardenTools/CrcEngine.svg?branch=master
-        :target: https://travis-ci.com/GardenTools/crcengine
+..  image:: https://img.shields.io/github/workflow/status/GardenTools/CrcEngine/Python%20package/GardenTools-patch-3
+        :target: https://github.com/GardenTools/CrcEngine/actions
+
+..  image:: https://img.shields.io/github/workflow/status/GardenTools/CrcEngine/Python%20package/master
+        :target: https://github.com/GardenTools/CrcEngine/actions
 
 .. image:: https://img.shields.io/pypi/pyversions/CrcEngine.svg
         :target: https://pypi.python.org/pypi/crcengine
