@@ -2,7 +2,7 @@
 """
 A python library for CRC calculation
 
-Copyright 2019 Garden Tools software
+Copyright 2021 Garden Tools software
 
 crcengine is free software: you can redistribute it an d /or modify
 it under the terms of the GNU General Public License as published by
@@ -153,6 +153,12 @@ def _get_templates_dir():
 
 
 def _get_datatype_bits(width):
+    """ Return the number of  bits required for the smallest data-type that
+     will accommodate a certain number of bits for a value
+
+    :param width: Number of bits that can represent the desired datatype
+    :return: Width in bits of smallest datatype
+    """
     datatype_bits = 64 if width > 32 else 32 if width > 16 else 16 if width > 8 else 8
     return datatype_bits
 

@@ -1,7 +1,7 @@
 """
 This file is part of crcengine, a python library for CRC calculation
 
-Copyright 2019 Garden Tools software
+Copyright 2021 Garden Tools software
 
 crcengine is free software: you can redistribute it an d /or modify
 it under the terms of the GNU General Public License as published by
