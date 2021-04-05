@@ -41,10 +41,10 @@ define PRINT_HELP_PYSCRIPT
 import re, sys
 
 for line in sys.stdin:
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
-	if match:
-		target, help = match.groups()
-		print("%-20s %s" % (target, help))
+    match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
+    if match:
+      target, help = match.groups()
+      print("%-20s %s" % (target, help))
 endef
 export PRINT_HELP_PYSCRIPT
 
@@ -121,8 +121,8 @@ install: clean ## install the package to the active Python's site-packages
 
 UPDATE_REQS=pip-compile -q -U --output-file=requirements.txt requirements.in
 
-.PHONY: update_requirements
-update_requirements:
+.PHONY: update-requirements
+update-requirements: ## Update dependencies in requirements.txt
 	$(call UPDATE_REQS)
 
 requirements.txt: requirements.in

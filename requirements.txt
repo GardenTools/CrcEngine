@@ -42,14 +42,8 @@ idna==2.10
     # via requests
 importlib-metadata==3.10.0
     # via
-    #   build
     #   keyring
-    #   pep517
-    #   pluggy
-    #   pytest
-    #   tox
     #   twine
-    #   virtualenv
 iniconfig==1.1.1
     # via pytest
 isort==5.8.0
@@ -131,10 +125,6 @@ tqdm==4.59.0
     # via twine
 twine==3.4.1
     # via -r requirements.in
-typed-ast==1.4.2
-    # via astroid
-typing-extensions==3.7.4.3
-    # via importlib-metadata
 urllib3==1.26.4
     # via requests
 virtualenv==20.4.3
@@ -146,9 +136,7 @@ wheel==0.36.2
 wrapt==1.12.1
     # via astroid
 zipp==3.4.1
-    # via
-    #   importlib-metadata
-    #   pep517
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
