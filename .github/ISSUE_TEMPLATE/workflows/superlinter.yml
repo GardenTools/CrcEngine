@@ -9,7 +9,7 @@ jobs:
   super-lint:
     # Name the Job
     name: Lint code base
-    # Set the type of machine to run on
+    # Set the type of machine to run on moo
     runs-on: ubuntu-latest
 
     steps:
