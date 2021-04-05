@@ -106,9 +106,11 @@ coverage: ## Run tests with coverage html output
 release: dist ## package and upload a release
 	twine upload dist/*
 
+# testpypi is expected to point to https://test.pypi.org/legacy/ 
+
 .PHONY: release-test
 release-test: dist ## package and upload a release
-	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	twine upload --repository testpypi dist/*
 
 .PHONY: dist
 dist: clean ## builds source and wheel package

@@ -16,4 +16,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 """
-__version__ = "0.3.0b2"
+__version__ = "0.3.0b3"
