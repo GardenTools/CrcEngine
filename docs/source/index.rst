@@ -9,8 +9,10 @@ Welcome to CrcEngine's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-
+    
+   readme
+   history
+   modules
 
 Indices and tables
 ==================
@@ -18,6 +20,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-.. include:: ../../README.rst
