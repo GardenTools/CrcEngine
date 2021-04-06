@@ -1,22 +1,25 @@
 #!/usr/bin/env python
 """
-A python library for CRC calculation
-
-Copyright 2021 Garden Tools software
-
-crcengine is free software: you can redistribute it an d /or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-crcengine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
+Implementation of CRC calculation in pure python
 """
+
+# This file is part of CrcEngine, a python library for CRC calculation
+#
+# Copyright 2021 Garden Tools software
+#
+# crcengine is free software: you can redistribute it an d /or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# crcengine is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
+
 from .algorithms import get_algorithm_params
 
 
@@ -260,8 +263,8 @@ def create_generic_lsbf(
 
 def create_msb_table_individual(poly, width):
     """Generate a CRC table calculating each entry.
-        Mainly for demonstration and test, since calculate_msb_table() is
-        much more efficient at calculating the same information
+    Mainly for demonstration and test, since calculate_msb_table() is
+    much more efficient at calculating the same information
     :return: Generated table
     """
     msb_lshift = width - 8
