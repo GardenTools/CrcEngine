@@ -16,7 +16,6 @@ def pytest_configure(config):
 def pytest_collection_modifyitems(config, items):
     # If a test has the needs_ceedling marker and no-ceedling has been specified
     # mark it as a skipped test
-    print("beep")
     if config.getoption("--no-ceedling"):
         print("no ceedling")
         skip_ceedling = pytest.mark.skip(reason="--no-ceedling specified")

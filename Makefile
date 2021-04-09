@@ -123,8 +123,8 @@ install: clean ## install the package to the active Python's site-packages
 
 UPDATE_REQS=pip-compile -q -U --output-file=requirements.txt requirements.in
 
-.PHONY: update-requirements
-update-requirements: ## Update dependencies in requirements.txt
+.PHONY: update-deps
+update-deps: ## Update dependencies in requirements.txt
 	$(call UPDATE_REQS)
 
 requirements.txt: requirements.in

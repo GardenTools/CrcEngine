@@ -1,4 +1,4 @@
-"""Unit tests for the crcengine module"""
+"""Unit tests for the calc module"""
 # This file is part of crcengine.
 #
 # crcengine is free software: you can redistribute it an d /or modify
@@ -210,3 +210,4 @@ def test_custom_algorithm():
     assert "mycrc8" not in crcengine.algorithms_available()
     with pytest.raises(crcengine.AlgorithmNotFoundError):
         crcengine.get_algorithm_params("mycrc8")
+
