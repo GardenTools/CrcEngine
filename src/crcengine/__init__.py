@@ -19,22 +19,22 @@ Package exports
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from .version import __version__
-from .calc import (
-    new,
-    create,
-    create_generic,
-    create_msb_table,
-    create_lsb_table,
-    bit_reverse_byte,
-    bit_reverse_n,
-    get_bits_max_value,
-)
 from .algorithms import (
-    get_algorithm_params,
+    AlgorithmNotFoundError,
     algorithms_available,
+    get_algorithm_params,
     register_algorithm,
     unregister_algorithm,
-    AlgorithmNotFoundError,
+)
+from .calc import (
+    bit_reverse_byte,
+    bit_reverse_n,
+    create,
+    create_generic,
+    create_lsb_table,
+    create_msb_table,
+    get_bits_max_value,
+    new,
 )
 from .codegen import generate_code, generate_test
+from .version import __version__
