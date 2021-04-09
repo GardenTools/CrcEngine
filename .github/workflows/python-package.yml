@@ -41,3 +41,29 @@ jobs:
     - name: Test with tox & pytest
       run: |
         tox -e py -- --no-ceedling
+
+  code_gen:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        gem install ceedling
+    - name: Run code-gen tests
+      run: |
+        python setup.py develop
+        pytest -s -v tests/test_code_gen.py
