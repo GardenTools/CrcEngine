@@ -2,6 +2,10 @@
 History
 =======
 
+0.3.1 (2021-04-09)
+------------------
+* Correcting metadata for python version in setup.cfg
+
 0.3.0 (2021-04-05)
 ------------------
 * Fixed code generation for algorithms whose result doesn't wholly fill a data-type

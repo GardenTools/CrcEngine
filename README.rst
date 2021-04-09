@@ -1,11 +1,8 @@
 .. image:: https://img.shields.io/pypi/v/crcengine.svg
         :target: https://pypi.python.org/pypi/crcengine
 
-..  image:: https://img.shields.io/github/workflow/status/GardenTools/CrcEngine/Python%20package/GardenTools-patch-3
-        :target: https://github.com/GardenTools/CrcEngine/actions
-
 ..  image:: https://img.shields.io/github/workflow/status/GardenTools/CrcEngine/Python%20package/master
-        :target: https://github.com/GardenTools/CrcEngine/actions
+        :target: https://github.com/GardenTools/CrcEngine/actions?query=branch%3Amaster
 
 .. image:: https://img.shields.io/pypi/pyversions/CrcEngine.svg
         :target: https://pypi.python.org/pypi/crcengine
@@ -49,6 +46,11 @@ A list of pre-defined algorithms can be obtained using crcengine.algorithms_avai
 
    >>> list(crcengine.algorithms_available())
    ['crc8', 'crc8-autosar', 'crc8-bluetooth', 'crc8-ccitt', 'crc8-gsm-b', 'crc8-sae-j1850', 'crc15-can', 'crc16-kermit', 'crc16-ccitt-true', 'crc16-xmodem', 'crc16-autosar', 'crc16-ccitt-false', 'crc16-cdma2000', 'crc16-ibm', 'crc16-modbus', 'crc16-profibus', 'crc24-flexray16-a', 'crc24-flexray16-b', 'crc32', 'crc32-bzip2', 'crc32-c', 'crc64-ecma']
+
+
+Built-in algorithms
+~~~~~~~~~~~~~~~~~~~
+crc8, crc8-autosar, crc8-bluetooth, crc8-ccitt, crc8-gsm-b, crc8-sae-j1850, crc15-can, crc16-kermit, crc16-ccitt-true, crc16-xmodem, crc16-autosar, crc16-ccitt-false, crc16-cdma2000, crc16-ibm, crc16-modbus, crc16-profibus, crc24-flexray16-a, crc24-flexray16-b, crc32, crc32-bzip2, crc32-c, crc64-ecma
 
 Examples
 --------
