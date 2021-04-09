@@ -18,6 +18,9 @@ Package exports
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
+import importlib_metadata
+
+__version__ = importlib_metadata.version('crcengine')
 
 from .algorithms import (
     AlgorithmNotFoundError,
@@ -36,5 +39,5 @@ from .calc import (
     get_bits_max_value,
     new,
 )
-from .codegen import generate_code, generate_test
-from .version import __version__
+from crcengine.codegen import generate_code, generate_test
+

@@ -3,13 +3,11 @@
 include CHANGES.rst
 include LICENSE
 include README.rst
+include VERSION.txt
 include tox.ini
-include dev-requirements.in
-include dev-requirements.txt
 include requirements.in
 include requirements.txt
 include .pylintrc
-include .travis.yml
 
 recursive-include examples *
 recursive-include src/crcengine/templates *

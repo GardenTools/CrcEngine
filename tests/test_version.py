@@ -1,9 +1,5 @@
-"""
-CrcEngine package version number definition
-"""
-# This file is part of CrcEngine, a python library for CRC calculation
-#
-# Copyright 2021 Garden Tools software
+"""Unit tests for version number reporting"""
+# This file is part of crcengine.
 #
 # crcengine is free software: you can redistribute it an d /or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,4 +14,13 @@ CrcEngine package version number definition
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-__version__ = "0.3.2a1"
+import packaging.version
+
+import crcengine
+
+def test_version():
+    pkg_ver = packaging.version.parse(crcengine.__version__)
+    ref_ver = packaging.version.parse("0.3.0")
+    print(pkg_ver)
+    print(ref_ver)
+    assert pkg_ver > ref_ver
