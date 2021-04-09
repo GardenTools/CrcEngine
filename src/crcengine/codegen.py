@@ -21,10 +21,11 @@ Generation of C code for CRC calculation
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import generator_stop
-from collections import namedtuple
+
 import os
 import pathlib
 import textwrap
+from collections import namedtuple
 
 from jinja2 import Environment, FileSystemLoader
 
