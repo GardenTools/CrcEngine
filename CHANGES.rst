@@ -2,6 +2,10 @@
 History
 =======
 
+0.3.2 (2021-04-10)
+------------------
+Correcting issue relating to module import order for version.py
+
 0.3.1 (2021-04-09)
 ------------------
 * Correcting metadata for python version in setup.cfg
