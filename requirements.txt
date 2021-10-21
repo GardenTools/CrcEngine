@@ -12,7 +12,7 @@ astroid==2.5.2
     # via pylint
 attrs==20.3.0
     # via pytest
-babel==2.9.0
+babel==2.9.1
     # via sphinx
 bleach==3.3.0
     # via readme-renderer
@@ -106,23 +106,23 @@ pylint==2.7.4
     # via -r requirements.in
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.11.1
-    # via -r requirements.in
 pytest==6.2.3
     # via
     #   -r requirements.in
     #   pytest-cov
+pytest-cov==2.11.1
+    # via -r requirements.in
 pytz==2021.1
     # via babel
 readme-renderer==29.0
-    # via twine
-requests-toolbelt==0.9.1
     # via twine
 requests==2.25.1
     # via
     #   requests-toolbelt
     #   sphinx
     #   twine
+requests-toolbelt==0.9.1
+    # via twine
 rfc3986==1.4.0
     # via twine
 secretstorage==3.3.1
