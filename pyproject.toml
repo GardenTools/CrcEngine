@@ -5,3 +5,15 @@ build-backend = "setuptools.build_meta"
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+[tool.poetry]
+name = "crcengine"
+version = "0.4.0"
+description = "A library for CRC calculation and code generation"
+authors = [ "Garden Tools <gardensofdorwinion@gmail.com>"]
+
+[tool.poetry.dependencies]
+python ="*"
+
+[tool.poetry.dev-dependencies]
+
