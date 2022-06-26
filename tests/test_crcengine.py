@@ -211,3 +211,48 @@ def test_custom_algorithm():
     with pytest.raises(crcengine.AlgorithmNotFoundError):
         crcengine.get_algorithm_params("mycrc8")
 
+
+def test_bug_325():
+    data = bytes([0X20])
+    data2 = b'123456789'
+    seed = 55
+    my_crc_algorithm = crcengine.create(poly=0x07,
+                                        width=8,
+                                        seed=seed,
+                                        ref_in=1,
+                                        ref_out=0,
+                                        name="test",
+                                        xor_out=0x0)
+
+    eng_gen = crcengine.create_generic(poly=0x07,
+                                       width=8,
+                                       seed=seed,
+                                       ref_in=1,
+                                       ref_out=0,
+                                       name="test_gen",
+                                       xor_out=0x0)
+    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
+    assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
+
+
+def test_bug_325_2():
+    data = bytes([0X20])
+    data2 = b'123456789'
+    seed = 0x3003
+    my_crc_algorithm = crcengine.create(poly=0x07,
+                                        width=16,
+                                        seed=seed,
+                                        ref_in=1,
+                                        ref_out=0,
+                                        name="test",
+                                        xor_out=0x0)
+
+    eng_gen = crcengine.create_generic(poly=0x07,
+                                       width=16,
+                                       seed=seed,
+                                       ref_in=1,
+                                       ref_out=0,
+                                       name="test_gen",
+                                       xor_out=0x0)
+    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
+    assert my_crc_algorithm(data2) == eng_gen.calculate(data2)

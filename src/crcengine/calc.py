@@ -43,7 +43,12 @@ class _CrcLsbf:
         :param data: a string of bytes
         :return: integer calculated CRC
         """
-        crc = self._seed
+        # For the parameters to make sense in the normal usage, the seed has to
+        # be reflected here because this algorithm corresponds to a reflection
+        # of the input data, which is implemented by a reflection of the lookup
+        # table for performance improvement i.e. all the intermediate CRC values
+        # are reflected so the same has to be done for the seed
+        crc = bit_reverse_n(self._seed, self._width)
         for byte in data:
             crc = (crc >> 8) ^ self._table[(crc & 0xFF) ^ byte]
             crc &= self._result_mask
@@ -166,7 +171,7 @@ class _CrcGenericLsbf:
         :param seed: Optional seed
         :return: calculated CRC
         """
-        if seed:
+        if seed is not None:
             crc = seed
         else:
             crc = self._seed
