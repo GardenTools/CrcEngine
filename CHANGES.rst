@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.3 (2022-06-26)
+------------------
+Bug #325 Fix for incorrect result when reflected input bytes are selected with a non-zero
+seed.
+
 0.3.2 (2021-04-10)
 ------------------
 Correcting issue relating to module import order for version.py
