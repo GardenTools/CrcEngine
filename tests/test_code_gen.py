@@ -26,6 +26,8 @@ C_TEST_HOME = join(os.path.dirname(__file__), "c_tests")
 
 @pytest.fixture(autouse=True)
 def _generate_algorithms():
+    crcengine.register_algorithm("myreverse8", poly=0x07, width=8, seed=0x55,
+                                 reflect=True, xor_out=0, check=0x80)
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating code for", alg)
@@ -37,15 +39,18 @@ def generate_tests():
     in so that the introduction of a regression in enumeration of algorithms
     (for example) won't affect the tests run unless they are explicitly
      regenerated"""
+    crcengine.register_algorithm("myreverse8", poly=0x07, width=8, seed=0x55,
+                                 reflect=True, xor_out=0, check=0x80)
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
-        print("Generating code for", alg)
+        print("Generating tests for", alg)
         crcengine.generate_code(alg, join(C_TEST_HOME, "src"))
         crcengine.codegen.generate_test(alg, join(C_TEST_HOME, "test"))
 
 
 @pytest.mark.needs_ceedling
 def test_code_gen():
+    generate_tests()
     completed = subprocess.run(
         ["ceedling", "test:all"],
         stdout=subprocess.PIPE,

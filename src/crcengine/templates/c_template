@@ -8,6 +8,7 @@
 
 {% if xor_out is defined -%}
 #define RESULT_XOR_MASK {{xor_out}}
+
 {% set return_expression = 'crc ^ RESULT_XOR_MASK' %}
 {% else %}
 {% set return_expression = 'crc' %}

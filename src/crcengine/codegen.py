@@ -32,6 +32,7 @@ from jinja2 import Environment, FileSystemLoader
 from .algorithms import get_algorithm_params
 from .calc import create_lsb_table, create_msb_table
 from crcengine import __version__ as crcengine_version
+from crcengine import bit_reverse_n
 
 # Generated file information
 _GenFile = namedtuple("GenFile", ["template", "output"])
@@ -95,9 +96,12 @@ def _get_template_params(crc_params, output_dir, seed_parameter, func_name, lang
     # template, if they are not defined it means that the operation the value
     # is relevant for should not be performed
     if not seed_parameter:
-        template_params["seed"] = "0x{crc_param:0x}{lit_sufx}".format(
-            crc_param=crc_params["seed"], lit_sufx=lit_sufx
-        )
+        # If the input is reflected, we need to also reflect the seed hard-coded
+        # into the C file
+        seed = (bit_reverse_n(crc_params["seed"], crc_params["width"]) if crc_params["ref_in"] else
+                crc_params["seed"])
+        template_params["seed"] = "0x{crc_param:0x}{lit_sufx}".format(crc_param=seed,
+            lit_sufx=lit_sufx)
     if crc_params["xor_out"]:
         template_params["xor_out"] = "0x{crc_param:0x}{lit_sufx}".format(
             crc_param=crc_params["xor_out"], lit_sufx=lit_sufx

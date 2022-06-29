@@ -122,11 +122,11 @@ def algorithms_available():
     yield from _registered_algorithms.keys()
 
 
-def register_algorithm(name, polynomial, width, seed, reflect, xor_out, check=0):
+def register_algorithm(name, poly, width, seed, reflect, xor_out, check=0):
     """Register a CRC algorithm with custom parameters"""
     poly_mask = (1 << width) - 1
     _registered_algorithms[name] = (
-        polynomial & poly_mask,
+        poly & poly_mask,
         width,
         seed & poly_mask,
         reflect,

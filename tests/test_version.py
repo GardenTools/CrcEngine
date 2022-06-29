@@ -18,9 +18,8 @@ import packaging.version
 
 import crcengine
 
+
 def test_version():
     pkg_ver = packaging.version.parse(crcengine.__version__)
     ref_ver = packaging.version.parse("0.3.0")
-    print(pkg_ver)
-    print(ref_ver)
     assert pkg_ver > ref_ver
