@@ -168,7 +168,7 @@ virtualenv==20.4.3
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.36.2
+wheel==0.38.1
     # via -r requirements.in
 wrapt==1.12.1
     # via astroid
