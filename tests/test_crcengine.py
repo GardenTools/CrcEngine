@@ -24,6 +24,11 @@ _U32_MAX = crcengine.get_bits_max_value(32)
 
 
 @pytest.fixture
+def crc5_usb():
+    return crcengine.new("crc5/usb")
+
+
+@pytest.fixture
 def crc32():
     return crcengine.new("crc32")
 
@@ -53,8 +58,11 @@ def test_reverse_poly():
 
 
 def test_crc8():
+    params = crcengine.get_algorithm_params("crc8")
     crc8 = crcengine.new("crc8")
+    generic = crcengine.create_generic(**params)
     assert crc8(b"123456789") == 0xBC
+    assert generic(b"123456789") == 0xBC
 
 
 def test_crc8_autosar():
@@ -198,6 +206,19 @@ def test_algorithm_checks(algorithm_name):
     assert crc_alg(b"123456789") == check_word, "Check CRC mismatch for {}".format(
         algorithm_name
     )
+
+
+@pytest.mark.parametrize("algorithm_name", crcengine.algorithms_available())
+def test_generic_check(algorithm_name):
+    """Cross check the result of the table-driven algorithm against the generic
+    one for every registered CRC algorithm"""
+    params = crcengine.get_algorithm_params(algorithm_name, True)
+    check_word = params["check"]
+    # check can't be in the params if an algorithm is created,
+    # bit hacky
+    del params["check"]
+    generic = crcengine.create_generic(**params)
+    assert generic(b"123456789") == check_word
 
 
 def test_custom_algorithm():

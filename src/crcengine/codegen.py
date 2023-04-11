@@ -56,7 +56,7 @@ def generate_code(
 
 def _get_template_params(crc_params, output_dir, seed_parameter, func_name, language):
     datatype_bits = _get_datatype_bits(crc_params["width"])
-    crc_id = crc_params["name"].replace("-", "_")
+    crc_id = crc_params["name"].replace("-", "_").replace("/", "_")
     if not func_name:
         func_name = crc_id
     template_params = {

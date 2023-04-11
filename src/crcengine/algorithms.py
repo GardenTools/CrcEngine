@@ -1,13 +1,12 @@
 #!/usr/bin/env python
-"""
-CRC Algorithm parameterisation
+"""CRC Algorithm parametrisation
 """
 
 # This file is part of CrcEngine, a python library for CRC calculation
 #
 # Copyright 2021 Garden Tools software
 #
-# crcengine is free software: you can redistribute it an d /or modify
+# crcengine is free software: you can redistribute it and /or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -21,7 +20,7 @@ CRC Algorithm parameterisation
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import generator_stop
-
+from collections import namedtuple as _namedtuple
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
 _CRC16_CCITT_POLY = 0x1021
@@ -33,7 +32,14 @@ _U32_MAX = (1 << 32) - 1
 
 _FIELDS = ("poly", "width", "seed", "ref_in", "ref_out", "xor_out", "check")
 
+CrcParams = _namedtuple("CrcParams", (
+    "polynomial", "width", "seed", "reflect_in", "reflect_out", "xor_out"
+))
+
 _ALGORITHMS = {
+    # ======================== sub-byte =======================================
+    # Token CRC in USB https://web.archive.org/web/20160326215031/http://www.usb.org/developers/whitepapers/crcdes.pdf
+    "crc5-usb": (0x05, 5, 0x1f, True, True,  0x1f,  0x19),
     # =========================  8-bit ========================================
     "crc8": (0xD5, 8, 0, False, False, 0, 0xBC),
     "crc8-autosar": (0x2F, 8, _U8_MAX, False, False, _U8_MAX, 0xDF),
@@ -94,7 +100,7 @@ class AlgorithmNotFoundError(Exception):
     the table"""
 
 
-def get_algorithm_params(name, include_check=False):
+def get_algorithm_params(name: str, include_check=False):
     """Obtain the parameters for a named CRC algorithm
     Optionally the 'check' field can be included, this field is not part of the
     definition of the algorithm and so is omitted by default
@@ -103,6 +109,16 @@ def get_algorithm_params(name, include_check=False):
     :param include_check: if True include the 'check' field in the output
     :return: dict of algorithm parameters
     """
+    raw_params = _lookup_named_params(name)
+    final = None if include_check else -1
+    param_dict = dict(zip(_FIELDS[:final], raw_params[:final]))
+    param_dict["name"] = name
+    return param_dict
+
+
+def _lookup_named_params(name: str) -> dict:
+    """Look up the defined raw parameters for algorithm `name`
+    """
     try:
         raw_params = _ALGORITHMS[name]
     except KeyError:
@@ -110,10 +126,28 @@ def get_algorithm_params(name, include_check=False):
             raw_params = _registered_algorithms[name]
         except KeyError as e:
             raise AlgorithmNotFoundError(name) from e
-    final = None if include_check else -1
-    param_dict = dict(zip(_FIELDS[:final], raw_params[:final]))
-    param_dict["name"] = name
-    return param_dict
+    return raw_params
+
+
+def lookup_params(name: str) -> CrcParams:
+    raw_params = _lookup_named_params(name)
+    return CrcParams(*raw_params[:6])
+
+
+def params_from_dict(params: dict) -> CrcParams:
+    """ TODO
+
+    :param params:
+    :return:
+    """
+    return CrcParams(
+        polynomial=params["poly"],
+        width=params["width"],
+        seed=params["seed"],
+        reflect_in=params["ref_in"],
+        reflect_out=params["ref_out"],
+        xor_out=params["xor_out"],
+    )
 
 
 def algorithms_available():
