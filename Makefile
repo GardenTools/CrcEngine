@@ -25,6 +25,8 @@ else
     FIX_WIN_VENV=:
 endif
 
+PYTHON?=python
+
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
 
@@ -121,10 +123,11 @@ dist: clean ## builds source and wheel package
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
-UPDATE_REQS=pip-compile -q -U --output-file=requirements.txt requirements.in
+UPDATE_REQS=pip-compile -q -U --resolver=backtracking --output-file=requirements.txt requirements.in
 
 .PHONY: update-deps
 update-deps: ## Update dependencies in requirements.txt
+	$(PYTHON) -m pip install --upgrade pip
 	$(call UPDATE_REQS)
 
 requirements.txt: requirements.in
