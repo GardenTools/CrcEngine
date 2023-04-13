@@ -6,7 +6,7 @@
 #
 # Copyright 2021 Garden Tools software
 #
-# crcengine is free software: you can redistribute it and /or modify
+# crcengine is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -135,10 +135,10 @@ def lookup_params(name: str) -> CrcParams:
 
 
 def params_from_dict(params: dict) -> CrcParams:
-    """ TODO
+    """Turn a dict of CRC parameters into a CrcParams
 
-    :param params:
-    :return:
+    :param params: dictionary of parameters as returned by get_algorithm_params
+    :return: corresponding CrcParams namedtuple
     """
     return CrcParams(
         polynomial=params["poly"],
@@ -156,21 +156,22 @@ def algorithms_available():
     yield from _registered_algorithms.keys()
 
 
-def register_algorithm(name, poly, width, seed, reflect, xor_out, check=0):
+def register_algorithm(name: str, polynomial: int, width: int, seed: int, reflect_in: bool,
+                       reflect_out: bool,  xor_out: bool, check: int = None) -> None:
     """Register a CRC algorithm with custom parameters"""
     poly_mask = (1 << width) - 1
     _registered_algorithms[name] = (
-        poly & poly_mask,
+        polynomial & poly_mask,
         width,
         seed & poly_mask,
-        reflect,
-        reflect,
+        reflect_in,
+        reflect_out,
         xor_out & poly_mask,
         check,
     )
 
 
-def unregister_algorithm(name):
+def unregister_algorithm(name: str) -> None:
     """ Remove an algorithm registration"""
     try:
         del _registered_algorithms[name]

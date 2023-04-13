@@ -1,7 +1,7 @@
 """Unit tests for the calc module"""
 # This file is part of crcengine.
 #
-# crcengine is free software: you can redistribute it an d /or modify
+# crcengine is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -17,6 +17,7 @@ import struct
 import pytest
 import crcengine
 from crcengine import get_algorithm_params, bit_reverse_n
+from crcengine import algorithms
 
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params("crc32")["poly"]
@@ -71,8 +72,14 @@ def test_crc8_autosar():
 
 
 def test_crc8_bluetooth():
+    params = algorithms.lookup_params("crc8-bluetooth")
     crc8 = crcengine.new("crc8-bluetooth")
+    generic_crc = crcengine.create_generic(*params)
+    print("generic")
+    assert generic_crc(b"123456789") == 0x26
+    print("table")
     assert crc8(b"123456789") == 0x26
+
 
 
 def test_crc32_generic():
