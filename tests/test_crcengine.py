@@ -94,7 +94,7 @@ def test_crc32_generic():
 def test_crc32_generic_lsb():
     poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
-    crc32_generic = crcengine.calc.create_generic_lsbf(
+    crc32_generic = crcengine.calc.generic_lsb_first(
         poly, 32, _U32_MAX, ref_in=False, ref_out=False, xor_out=_U32_MAX
     )
     assert crc32_generic.calculate(b"A") == 0xD3D99E8B
@@ -250,14 +250,12 @@ def test_bug_325():
                                         seed=seed,
                                         ref_in=1,
                                         ref_out=0,
-                                        name="test",
                                         xor_out=0x0)
     eng_gen = crcengine.create_generic(poly=0x07,
                                        width=8,
                                        seed=seed,
                                        ref_in=1,
                                        ref_out=0,
-                                       name="test_gen",
                                        xor_out=0x0)
     assert my_crc_algorithm(data) == expected_result1
     assert eng_gen.calculate(data) == expected_result1
@@ -273,7 +271,6 @@ def test_bug_325_2():
                                         seed=seed,
                                         ref_in=1,
                                         ref_out=0,
-                                        name="test",
                                         xor_out=0x0)
 
     eng_gen = crcengine.create_generic(poly=0x07,
@@ -281,7 +278,6 @@ def test_bug_325_2():
                                        seed=seed,
                                        ref_in=1,
                                        ref_out=0,
-                                       name="test_gen",
                                        xor_out=0x0)
     assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
@@ -294,14 +290,12 @@ def test_bug_325_3():
                                         seed=seed,
                                         ref_in=1,
                                         ref_out=1,
-                                        name="test",
                                         xor_out=0x0)
     eng_gen = crcengine.create_generic(poly=0x07,
                                        width=8,
                                        seed=seed,
                                        ref_in=1,
                                        ref_out=1,
-                                       name="test_gen",
                                        xor_out=0x0)
     print(my_crc_algorithm(data))
     print(eng_gen.calculate(data))

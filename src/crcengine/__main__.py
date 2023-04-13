@@ -21,7 +21,7 @@ import argparse
 import sys
 
 import crcengine
-import crcengine.codegen as codegen
+from crcengine import codegen
 
 
 def main():
@@ -143,12 +143,12 @@ def do_calculate(args):
         data = args.string.encode()
     elif args.file:
         # This is a bit stupid for now just to get it working, ideally calculation would be chunked
-        with open(args.file, "rb") as f:
-            data = f.read()
+        with open(args.file, "rb") as file:
+            data = file.read()
     else:
         data = sys.stdin.read().encode()
     result = algo.calculate(data)
-    print("{}{:x}".format(prefix, result))
+    print(f"{prefix}{result:x}")
 
 
 def do_generate(args):

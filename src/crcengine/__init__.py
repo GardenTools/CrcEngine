@@ -39,5 +39,4 @@ from .calc import (
     get_bits_max_value,
     new,
 )
-from crcengine.codegen import generate_code, generate_test
-
+from .codegen import generate_code, generate_test

@@ -20,22 +20,29 @@ Implementation of CRC calculation in pure python
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-from .algorithms import CrcParams, lookup_params, register_algorithm
+from .algorithms import CrcParams, lookup_params
 
 _BYTEBITS = 8
 
 
-class _CrcLsbfTable:
+class _ReflectedTableCrc:
     """Least-significant-bit first calculation of a CRC. Implies a ref_in
     calculations was specified with new data being shifted in from the MSB end
-    of the calculation register"""
+    of the calculation register.
+
+    The seed parameter is still specified with high-order polynomial elements
+    in the most significant bit, which means this is not a "pure" LSB-first
+    CRC
+    """
 
     def __init__(self, table, width, seed, xor_out=0, reverse_result=False, name=""):
-        """
+        """Initialize a table-based CRC instead of a specified polynomial,
+        the information comes from a precomputed table of values
 
-        :param table:
-        :param width:
-        :param seed:
+
+        :param table: 256 entry lookup-table for calculation
+        :param width: width in bits of CRC polynomial
+        :param seed: initial seed for calculation
         :param xor_out:
         :param reverse_result: reflect the bits of the result. Note that
                                although this is the same action as reflect_out
@@ -52,7 +59,7 @@ class _CrcLsbfTable:
         self._reverse_result = reverse_result
         self.name = name
 
-    def calculate(self, data):
+    def calculate(self, data: bytes):
         """Perform CRC calculation on data
 
         :param data: a string of bytes
@@ -67,8 +74,6 @@ class _CrcLsbfTable:
         for byte in data:
             crc = (crc >> 8) ^ self._table[(crc & 0xFF) ^ byte]
             crc &= self._result_mask
-            print(f"input {byte: 02x} reg {crc:08b}")
-        print("")
         if self._reverse_result:
             # This is a weird corner case where the output is reflected but the
             # input isn't
@@ -180,9 +185,6 @@ class _CrcGeneric:
                     crc = (crc << 1) ^ poly
                 else:
                     crc <<= 1
-                # TODO
-                crc &= self._crc_mask
-                print(f"input {byte:02x} reg {crc:08b}")
             crc &= self._crc_mask
         crc >>= self._crc_lshift
         if self._ref_out:
@@ -201,11 +203,6 @@ class _WindowedCrc:
     of the specified input data.
     """
     def __init__(self, params: CrcParams, name="") -> None:
-        """TODO write something
-
-
-        :param name:
-        """
         self._width = params.width
         self._default_seed = params.seed
         self._params = params
@@ -243,6 +240,7 @@ class _WindowedCrc:
         :param seed: optional seed value
         :return: calculated CRC
         """
+        # pylint: disable=too-many-locals
         residual = seed if seed is not None else self._default_seed
         num_input_bits = _BYTEBITS * len(data)
 
@@ -275,17 +273,12 @@ class _WindowedCrc:
             residual ^= input_bits << self._msb_lshift
             # XOR the poly, this is usually 8 bits, unless it is a partial first
             # or last byte
-            byte_string = "{:08b}".format(input_bits << self._msb_lshift)
-            print(f"byte {byte_string}")
             for _ in range(input_width):
                 if residual & self._msbit_mask:
                     residual = (residual << 1) ^ poly
                 else:
                     residual <<= 1
                 residual &= self._crc_mask
-                crc_string = f"{residual:08b}"
-                print(f"crc {crc_string}")
-            print(f"input={input_bits:02x} crc={residual:02x}")
         # For small polynomials undo any shift we did at the start
         assert residual & ((1 << self._crc_lshift) - 1) == 0
         residual >>= self._crc_lshift
@@ -318,15 +311,15 @@ class _WindowedCrc:
         return self.calculate(data)
 
 
-class _CrcGenericLsbf:
+class _GenericLsbfCrc:
     """General purpose CRC calculation using LSB algorithm. Mainly here for
     reference, since the other algorithms cover all useful calculation combinations
     """
 
-    def __init__(self, poly, width, seed, ref_in, ref_out, xor_out=0, name=""):
-        self._poly = poly
+    def __init__(self, lsb_poly, width, lsb_seed, ref_in, ref_out, xor_out, name=""):
+        self._poly = lsb_poly
         self._width = width
-        self._seed = seed
+        self._seed = lsb_seed
         self._xor_out = xor_out
         self._result_mask = (1 << width) - 1
         self._msbit = 1 << (width - 1)
@@ -377,22 +370,24 @@ def new(name):
     return create(*params)
 
 
-def table_crc(params: CrcParams, name="", options=None):
+def table_crc(params: CrcParams):
+    """Return a table-based CRC algorithm corresponding to `params`
+    """
     if params.reflect_in:
         table = create_lsb_table(params.polynomial, params.width)
-        crc_class = _CrcLsbfTable
+        crc_class = _ReflectedTableCrc
     else:
         table = create_msb_table(params.polynomial, params.width)
         crc_class = _CrcMsbfTable
 
     reverse_result = params.reflect_in != params.reflect_out
     algorithm = crc_class(table, params.width, params.seed, xor_out=params.xor_out,
-                          reverse_result=reverse_result, name=name)
+                          reverse_result=reverse_result)
     return algorithm
 
 
 def create(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
-           xor_out: int, name="", calc_engine="table", options=None):
+           xor_out: int, calc_engine="table"):
     """Create a table-driven CRC calculation engine
 
     :param poly: polynomial binary representation
@@ -400,19 +395,26 @@ def create(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
     :param seed: seed value for the CRC calculation to use
     :param ref_in:  reflect input bits
     :param ref_out: reflect output bits
-    :param name: associate a name with this algorithm
     :param xor_out:  exclusive-or the output with this value
     :return:
     """
     creator_fun = _CREATOR_FUNCS[calc_engine]
     params = CrcParams(poly, width, seed, ref_in, ref_out, xor_out)
-    algorithm = creator_fun(params, name, options)
+    algorithm = creator_fun(params)
     return algorithm
 
 
-def create_from_params(params: CrcParams, name="", calc_engine="table", options=None):
+def create_from_params(params: CrcParams, calc_engine="table"):
+    """Create a CRC calculation algorithm instance based on `params` using
+    calculation engine `calc_engine` as the back end
+
+    :param params:
+    :param calc_engine:
+    :return:
+    """
     creator_fun = _CREATOR_FUNCS[calc_engine]
-    return creator_fun(params, name, options)
+    return creator_fun(params)
+
 
 def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
                    xor_out: int, name=""):
@@ -434,26 +436,20 @@ def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool
 
 def create_windowed_todo(params, name=""):
     """Create generic non-table-driven CRC calculator
-
-    :param poly: Polynomial
-    :param width: calculator width in bits e.g. 32
-    :param seed: calculation seed value
-    :param ref_in: reflect incoming bits
-    :param ref_out: reflect result bits
-    :param name: name to assign to calculator
-    :param xor_out: pattern to XOR into result
+    TODO
     :return: A CRC calculation engine
     """
     return _WindowedCrc(params, name=name)
 
-def create_generic_lsbf(
-        poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF
+
+def generic_lsb_first(
+        lsb_poly, width, lsb_seed, ref_in=False, ref_out=False, xor_out=0xFFFFFF, name=""
 ):
     """Create a CRC calculation engine that uses the Least-significant first
-    algorithm, but does not reflect the polynomial. If you use this, reflect
-    the polynomial before passing it in"""
-    return _CrcGenericLsbf(
-        poly, width, seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
+    algorithm, but does not reflect the polynomial or seed value. If you use
+    this, reflect the polynomial before passing it in"""
+    return _GenericLsbfCrc(
+        lsb_poly, width, lsb_seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
     )
 
 
@@ -467,14 +463,14 @@ def create_msb_table_individual(poly, width):
     ms_bit = 1 << (width - 1)
     result_mask = (1 << width) - 1
     table = 256 * [0]
-    for n in range(1, 256):
-        crc = n << msb_lshift
+    for index in range(1, 256):
+        crc = index << msb_lshift
         for _ in range(8):
             if crc & ms_bit:
                 crc = (crc << 1) ^ poly
             else:
                 crc <<= 1
-        table[n] = crc & result_mask
+        table[index] = crc & result_mask
     return table
 
 
@@ -482,8 +478,14 @@ _CREATOR_FUNCS = {
     "table": table_crc,
     "generic": create_generic,
     "generic_msbf": create_generic,
-    "generic_lsbf": create_generic_lsbf,
+    "generic_lsbf": generic_lsb_first,
 }
+
+
+def available_calculation_engines():
+    """Return the list of available calculation back-ends"""
+    return _CREATOR_FUNCS.keys()
+
 
 def create_msb_table(poly, width):
     """Calculate a CRC lookup table for the selected algorithm definition
@@ -614,6 +616,13 @@ def _calc_end_mask(last_bit: int):
     return ~((1 << (7 - last_bit)) - 1) & 0xFF
 
 
-def bytes_to_bit_string(value: bytes, sep="_", add_prefix=False):
+def bytes_to_bit_string(value: bytes, sep="_", prefix=""):
+    """Convert a bytes into a binary string representation
+
+    :param value: bytes value to convert
+    :param sep: separator for output octets
+    :param prefix: optional additional prefix e.g. 0b
+    :return: binary representation string of `value`
+    """
     output = sep.join([f"{x:08b}" for x in value])
-    return "0b" + output if add_prefix else output
+    return prefix + output

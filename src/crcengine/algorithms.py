@@ -36,7 +36,11 @@ CrcParams = _namedtuple("CrcParams", (
     "polynomial", "width", "seed", "reflect_in", "reflect_out", "xor_out"
 ))
 
+# All algorithms specified in this table have their polynomials specified with
+# the high order coefficients in the most significant bit and the low order in
+# the least significant bits.
 _ALGORITHMS = {
+    # pylint: disable=line-too-long
     # ======================== sub-byte =======================================
     # Token CRC in USB https://web.archive.org/web/20160326215031/http://www.usb.org/developers/whitepapers/crcdes.pdf
     "crc5-usb": (0x05, 5, 0x1f, True, True,  0x1f,  0x19),
@@ -124,12 +128,16 @@ def _lookup_named_params(name: str) -> dict:
     except KeyError:
         try:
             raw_params = _registered_algorithms[name]
-        except KeyError as e:
-            raise AlgorithmNotFoundError(name) from e
+        except KeyError as excep:
+            raise AlgorithmNotFoundError(name) from excep
     return raw_params
 
 
 def lookup_params(name: str) -> CrcParams:
+    """Look up CRC parameters given an algorithm name.
+    A list of algorithms can be obtained using algorithms_available()
+    :param name: name of CRC algorithm
+    """
     raw_params = _lookup_named_params(name)
     return CrcParams(*raw_params[:6])
 
@@ -175,5 +183,5 @@ def unregister_algorithm(name: str) -> None:
     """ Remove an algorithm registration"""
     try:
         del _registered_algorithms[name]
-    except KeyError as e:
-        raise AlgorithmNotFoundError from e
+    except KeyError as excep:
+        raise AlgorithmNotFoundError from excep
