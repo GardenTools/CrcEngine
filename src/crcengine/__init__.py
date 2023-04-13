@@ -40,3 +40,19 @@ from .calc import (
     new,
 )
 from .codegen import generate_code, generate_test
+
+__all__ = [
+    AlgorithmNotFoundError,
+    algorithms_available,
+    bit_reverse_byte,
+    bit_reverse_n,
+    create,
+    create_generic,
+    create_lsb_table,
+    create_msb_table,
+    get_algorithm_params,
+    get_bits_max_value,
+    new,
+    register_algorithm,
+    unregister_algorithm,
+]

@@ -165,7 +165,7 @@ def algorithms_available():
 
 
 def register_algorithm(name: str, polynomial: int, width: int, seed: int, reflect_in: bool,
-                       reflect_out: bool,  xor_out: bool, check: int = None) -> None:
+                       reflect_out: bool,  xor_out: int, check: int = None) -> None:
     """Register a CRC algorithm with custom parameters"""
     poly_mask = (1 << width) - 1
     _registered_algorithms[name] = (

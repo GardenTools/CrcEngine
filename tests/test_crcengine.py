@@ -81,7 +81,6 @@ def test_crc8_bluetooth():
     assert crc8(b"123456789") == 0x26
 
 
-
 def test_crc32_generic():
     """Test the generic calculation engine with a CRC32"""
     crc32_generic = crcengine.create_generic(
@@ -217,7 +216,7 @@ def test_algorithm_checks(algorithm_name):
 
 @pytest.mark.parametrize("algorithm_name", crcengine.algorithms_available())
 def test_generic_check(algorithm_name):
-    """Cross check the result of the table-driven algorithm against the generic
+    """Check the result of the table-driven algorithm against the generic
     one for every registered CRC algorithm"""
     params = crcengine.get_algorithm_params(algorithm_name, True)
     check_word = params["check"]
@@ -229,7 +228,7 @@ def test_generic_check(algorithm_name):
 
 
 def test_custom_algorithm():
-    crcengine.register_algorithm("mycrc8", 0xFFD5, 8, 0, False, 0, 0xFFBC)
+    crcengine.register_algorithm("mycrc8", 0xFFD5, 8, seed=0, reflect_in=False, reflect_out=False, xor_out=0, check=0xFFBC)
     assert "mycrc8" in crcengine.algorithms_available()
     params = crcengine.get_algorithm_params("mycrc8")
     assert params["poly"] == 0xD5
@@ -248,14 +247,14 @@ def test_bug_325():
     my_crc_algorithm = crcengine.create(poly=0x07,
                                         width=8,
                                         seed=seed,
-                                        ref_in=1,
-                                        ref_out=0,
+                                        ref_in=True,
+                                        ref_out=False,
                                         xor_out=0x0)
     eng_gen = crcengine.create_generic(poly=0x07,
                                        width=8,
                                        seed=seed,
-                                       ref_in=1,
-                                       ref_out=0,
+                                       ref_in=True,
+                                       ref_out=False,
                                        xor_out=0x0)
     assert my_crc_algorithm(data) == expected_result1
     assert eng_gen.calculate(data) == expected_result1
@@ -269,36 +268,37 @@ def test_bug_325_2():
     my_crc_algorithm = crcengine.create(poly=0x07,
                                         width=16,
                                         seed=seed,
-                                        ref_in=1,
-                                        ref_out=0,
+                                        ref_in=True,
+                                        ref_out=False,
                                         xor_out=0x0)
 
     eng_gen = crcengine.create_generic(poly=0x07,
                                        width=16,
                                        seed=seed,
-                                       ref_in=1,
-                                       ref_out=0,
+                                       ref_in=True,
+                                       ref_out=False,
                                        xor_out=0x0)
-    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
+    assert my_crc_algorithm(data) == eng_gen.calculate(data)
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
 
+
 def test_bug_325_3():
-    seed=0x55
+    seed = 0x55
     data = b"123456789"
     my_crc_algorithm = crcengine.create(poly=0x07,
                                         width=8,
                                         seed=seed,
-                                        ref_in=1,
-                                        ref_out=1,
+                                        ref_in=True,
+                                        ref_out=True,
                                         xor_out=0x0)
     eng_gen = crcengine.create_generic(poly=0x07,
                                        width=8,
                                        seed=seed,
-                                       ref_in=1,
-                                       ref_out=1,
+                                       ref_in=True,
+                                       ref_out=True,
                                        xor_out=0x0)
     print(my_crc_algorithm(data))
     print(eng_gen.calculate(data))
     assert 0x80 == eng_gen.calculate(data)
     assert 0x80 == my_crc_algorithm(data)
-    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
+    assert my_crc_algorithm(data) == eng_gen.calculate(data)
