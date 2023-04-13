@@ -28,14 +28,6 @@ crcengine.codegen module
    :undoc-members:
    :show-inheritance:
 
-crcengine.version module
-------------------------
-
-.. automodule:: crcengine.version
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
