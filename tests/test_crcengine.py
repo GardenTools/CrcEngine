@@ -13,11 +13,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
+import dataclasses
 import struct
+
 import pytest
+
 import crcengine
-from crcengine import get_algorithm_params, bit_reverse_n
 from crcengine import algorithms
+from crcengine import get_algorithm_params, bit_reverse_n
 
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params("crc32")["poly"]
@@ -74,10 +77,8 @@ def test_crc8_autosar():
 def test_crc8_bluetooth():
     params = algorithms.lookup_params("crc8-bluetooth")
     crc8 = crcengine.new("crc8-bluetooth")
-    generic_crc = crcengine.create_generic(*params)
-    print("generic")
+    generic_crc = crcengine.create_generic(*dataclasses.astuple(params))
     assert generic_crc(b"123456789") == 0x26
-    print("table")
     assert crc8(b"123456789") == 0x26
 
 
@@ -297,8 +298,8 @@ def test_bug_325_3():
                                        ref_in=True,
                                        ref_out=True,
                                        xor_out=0x0)
-    print(my_crc_algorithm(data))
-    print(eng_gen.calculate(data))
+    # print(my_crc_algorithm(data))
+    # print(eng_gen.calculate(data))
     assert 0x80 == eng_gen.calculate(data)
     assert 0x80 == my_crc_algorithm(data)
     assert my_crc_algorithm(data) == eng_gen.calculate(data)

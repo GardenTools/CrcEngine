@@ -19,8 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-from __future__ import generator_stop
-from collections import namedtuple as _namedtuple
+from dataclasses import dataclass
 from typing import Iterable
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
@@ -33,9 +32,17 @@ _U32_MAX = (1 << 32) - 1
 
 _FIELDS = ("poly", "width", "seed", "ref_in", "ref_out", "xor_out", "check")
 
-CrcParams = _namedtuple("CrcParams", (
-    "polynomial", "width", "seed", "reflect_in", "reflect_out", "xor_out"
-))
+
+@dataclass
+class CrcParams:
+    """Basic parameters for specifying a CRC algorithm"""
+    polynomial: int
+    width: int
+    seed: int
+    reflect_in: bool
+    reflect_out: bool
+    xor_out: int
+
 
 # All algorithms specified in this table have their polynomials specified with
 # the high order coefficients in the most significant bit and the low order in

@@ -13,13 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-import crcengine
 from os.path import join
 import subprocess
 import os
 import sys
 
 import pytest
+
+import crcengine
 
 C_TEST_HOME = join(os.path.dirname(__file__), "c_tests")
 
@@ -31,7 +32,7 @@ def _generate_algorithms():
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating code for", alg)
-        crcengine.generate_code(alg, join(C_TEST_HOME, "src"))
+        crcengine.codegen.generate_code(alg, join(C_TEST_HOME, "src"))
 
 
 def generate_tests():
@@ -44,7 +45,7 @@ def generate_tests():
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating tests for", alg)
-        crcengine.generate_code(alg, join(C_TEST_HOME, "src"))
+        crcengine.codegen.generate_code(alg, join(C_TEST_HOME, "src"))
         crcengine.codegen.generate_test(alg, join(C_TEST_HOME, "test"))
 
 

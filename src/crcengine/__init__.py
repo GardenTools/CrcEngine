@@ -44,7 +44,8 @@ from .calc import (
     new,
     table_crc,
 )
-from .codegen import generate_code, generate_test
+
+from .import codegen
 
 __all__ = [
     "AlgorithmNotFoundError",
@@ -52,6 +53,7 @@ __all__ = [
     "available_calculation_engines",
     "bit_reverse_byte",
     "bit_reverse_n",
+    "codegen",
     "CrcParams",
     "create",
     "create_from_params",

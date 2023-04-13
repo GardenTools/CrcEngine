@@ -25,6 +25,7 @@ from typing import Iterable
 from .algorithms import CrcParams, lookup_params
 
 _BYTEBITS = 8
+_DEFAULT_ENGINE = "table"
 
 
 class _ReflectedTableCrc:
@@ -364,12 +365,12 @@ class _GenericLsbfCrc:
         return self.calculate(data)
 
 
-def new(name):
+def new(name, calc_engine=_DEFAULT_ENGINE):
     """Create a new CRC calculation instance"""
     params = lookup_params(name)
     # the check field is not part of the definition, remove it before
     # creating the algorithm
-    return create(*params)
+    return create_from_params(params, calc_engine)
 
 
 def table_crc(params: CrcParams):
@@ -406,7 +407,7 @@ def create(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
     return algorithm
 
 
-def create_from_params(params: CrcParams, calc_engine="table"):
+def create_from_params(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
     """Create a CRC calculation algorithm instance based on `params` using
     calculation engine `calc_engine` as the back end
 
@@ -436,12 +437,13 @@ def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool
     )
 
 
-def create_windowed_todo(params, name=""):
-    """Create generic non-table-driven CRC calculator
-    TODO
+def windowed_crc(params: CrcParams):
+    """Create generic non-table-driven CRC calculator that allows a start-bit
+    and bit-length window to be specified on the CRC calculation
+
     :return: A CRC calculation engine
     """
-    return _WindowedCrc(params, name=name)
+    return _WindowedCrc(params)
 
 
 def generic_lsb_first(
@@ -481,6 +483,7 @@ _CREATOR_FUNCS = {
     "generic": create_generic,
     "generic_msbf": create_generic,
     "generic_lsbf": generic_lsb_first,
+    "windowed": windowed_crc,
 }
 
 

@@ -45,7 +45,7 @@ def test_crc5_range_window(start_bit, check_stream):
         "ref_out": False,
         "xor_out": 0,
     }
-    crc_alg = crcengine.calc.create_windowed_todo(alg.params_from_dict(params))
+    crc_alg = crcengine.calc.windowed_crc(alg.params_from_dict(params))
     # Compare with hand-calculated result
     assert crc_alg.calculate(check_stream.to_bytes(2, byteorder='big'), start_bit=start_bit,
                              length_bits=9) == 0b01111
