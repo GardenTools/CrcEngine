@@ -21,6 +21,7 @@
 
 from __future__ import generator_stop
 from collections import namedtuple as _namedtuple
+from typing import Iterable
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
 _CRC16_CCITT_POLY = 0x1021
@@ -100,8 +101,8 @@ _registered_algorithms = {}
 
 
 class AlgorithmNotFoundError(Exception):
-    """Exception raised when an algorithm is requested that doesn't exist in
-    the table"""
+    """Exception raised when an unrecognized algorithm is requested.
+    """
 
 
 def get_algorithm_params(name: str, include_check=False):
@@ -112,6 +113,7 @@ def get_algorithm_params(name: str, include_check=False):
     :param name: Name of algorithm (lowercase)
     :param include_check: if True include the 'check' field in the output
     :return: dict of algorithm parameters
+    :raises: AlgorithmNotFoundError if algorithm with `name` cannot be found
     """
     raw_params = _lookup_named_params(name)
     final = None if include_check else -1
@@ -136,7 +138,9 @@ def _lookup_named_params(name: str) -> dict:
 def lookup_params(name: str) -> CrcParams:
     """Look up CRC parameters given an algorithm name.
     A list of algorithms can be obtained using algorithms_available()
+
     :param name: name of CRC algorithm
+    :raises AlgorithmNotFoundError: if algorithm `name` cannot be found
     """
     raw_params = _lookup_named_params(name)
     return CrcParams(*raw_params[:6])
@@ -158,7 +162,7 @@ def params_from_dict(params: dict) -> CrcParams:
     )
 
 
-def algorithms_available():
+def algorithms_available() -> Iterable[str]:
     """Obtain an iterable of available named CRC algorithms"""
     yield from _ALGORITHMS.keys()
     yield from _registered_algorithms.keys()

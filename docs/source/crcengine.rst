@@ -1,8 +1,18 @@
 crcengine package
-=================
+#################
+.. contents:: Page Contents
+    :depth: 3
+
+Module contents
+***************
+
+.. automodule:: crcengine
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Submodules
-----------
+**********
 
 crcengine.algorithms module
 ---------------------------
@@ -28,10 +38,5 @@ crcengine.codegen module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: crcengine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Back to the index: :doc:`index`

@@ -20,6 +20,8 @@ Implementation of CRC calculation in pure python
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
+from typing import Iterable
+
 from .algorithms import CrcParams, lookup_params
 
 _BYTEBITS = 8
@@ -482,8 +484,10 @@ _CREATOR_FUNCS = {
 }
 
 
-def available_calculation_engines():
-    """Return the list of available calculation back-ends"""
+def available_calculation_engines() -> Iterable[str]:
+    """Return the list of available calculation back-ends. These can be used
+    with :meth:`crcengine.create()`
+    """
     return _CREATOR_FUNCS.keys()
 
 
@@ -567,7 +571,7 @@ def create_lsb_table(poly, width):
     return table
 
 
-def bit_reverse_byte(byte):
+def bit_reverse_byte(byte: int) -> int:
     """Bit-bashing reversal of a byte"""
     result = 0
     for i in range(8):
@@ -576,7 +580,7 @@ def bit_reverse_byte(byte):
     return result & 0xFF
 
 
-def bit_reverse_n(value, num_bits):
+def bit_reverse_n(value: int, num_bits: int) -> int:
     """Mirror the bits in an integer
 
     :param value: the integer to reverse

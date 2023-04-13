@@ -14,9 +14,9 @@
         :target: https://crcengine.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-=========
+==========
 CrcEngine
-=========
+==========
 A python library for CRC calculation providing table-based as well as
 bit-bashing implementations (for reference).
 

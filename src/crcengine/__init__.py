@@ -25,34 +25,44 @@ __version__ = importlib_metadata.version('crcengine')
 from .algorithms import (
     AlgorithmNotFoundError,
     algorithms_available,
+    CrcParams,
     get_algorithm_params,
+    lookup_params,
     register_algorithm,
     unregister_algorithm,
 )
 from .calc import (
+    available_calculation_engines,
     bit_reverse_byte,
     bit_reverse_n,
     create,
+    create_from_params,
     create_generic,
     create_lsb_table,
     create_msb_table,
     get_bits_max_value,
     new,
+    table_crc,
 )
 from .codegen import generate_code, generate_test
 
 __all__ = [
     "AlgorithmNotFoundError",
     "algorithms_available",
+    "available_calculation_engines",
     "bit_reverse_byte",
     "bit_reverse_n",
+    "CrcParams",
     "create",
+    "create_from_params",
     "create_generic",
     "create_lsb_table",
     "create_msb_table",
     "get_algorithm_params",
     "get_bits_max_value",
+    "lookup_params",
     "new",
     "register_algorithm",
+    "table_crc",
     "unregister_algorithm",
 ]

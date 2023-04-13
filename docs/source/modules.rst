@@ -1,5 +1,5 @@
-crcengine
-=========
+Module documentation
+=====================
 
 .. toctree::
    :maxdepth: 4
