@@ -1,6 +1,11 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Old build system settings for setuptools
+#[build-system]
+#requires = ["setuptools", "wheel"]
+#build-backend = "setuptools.build_meta"
 
 [tool.isort]
 profile = "black"
@@ -11,9 +16,32 @@ name = "crcengine"
 version = "0.4.0"
 description = "A library for CRC calculation and code generation"
 authors = [ "Garden Tools <gardensofdorwinion@gmail.com>"]
+license = "GPL-3.0-only"
+readme = ["README.rst"]
+repository = "https://github.com/GardenTools/crcengine"
+documentation = "https://crcengine.readthedocs.io/en/latest/"
+keywords = ["crcengine", "CRC", "cyclic", "redundancy", "check", "checksum", "code-generation", "Castagnoli", "CRC32", "CRC16-CCITT"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: C",
+    "Topic :: Communications",
+    "Topic :: System :: Networking",
+    "Topic :: Utilities",
+]
 
 [tool.poetry.dependencies]
-python ="*"
+python ="^3.7"
+importlib-metadata = ">=3.6 <7.0"
+jinja2 = ">=2.7 <4.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+flake8 = "*" # TODO
+pylint = ">=2.0"
+pytest = ">=3.0.0"
+pytest-cov = "*"
+sphinx = "^5.3" # TODO check this
 
+[tool.poetry.scripts]
+crcengine = "crcengine.__main__:main"
