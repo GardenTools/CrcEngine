@@ -14,3 +14,4 @@ testenv/
 *.swp
 *.in~
 /venv*
+*.ps1~
