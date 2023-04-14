@@ -41,8 +41,10 @@ flake8 = "*" # TODO
 pylint = ">=2.0"
 pytest = ">=3.0.0"
 pytest-cov = "*"
-sphinx = "^5.3" # TODO check this
 twine  = "*" # not sure this is still needed
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^5.3" # TODO check this
 
 [tool.poetry.scripts]
 crcengine = "crcengine.__main__:main"
