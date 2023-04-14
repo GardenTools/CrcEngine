@@ -33,7 +33,7 @@ from .algorithms import get_algorithm_params
 from .calc import bit_reverse_n, create_lsb_table, create_msb_table
 
 # Generated file information
-_GenFile = namedtuple("GenFile", ["template", "output"])
+_GenFile = namedtuple("_GenFile", ["template", "output"])
 
 
 def generate_code(

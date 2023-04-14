@@ -20,7 +20,7 @@
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Dict, Iterable, Tuple, Union
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
 _CRC16_CCITT_POLY = 0x1021
@@ -29,6 +29,10 @@ _CRC32_POLY = 0x04C11DB7
 _U8_MAX = 255
 _U16_MAX = (1 << 16) - 1
 _U32_MAX = (1 << 32) - 1
+
+# Static type definition helpers
+_FIELDS_T = Tuple[int, int, int, bool, bool, int, int]
+_ALGPARAM_T = Union[str, int, bool]
 
 _FIELDS = ("poly", "width", "seed", "ref_in", "ref_out", "xor_out", "check")
 
@@ -104,7 +108,8 @@ _ALGORITHMS = {
     "crc64-ecma": (0x42F0E1EBA9EA3693, 64, 0, False, False, 0, 0x6C40DF5F0B497347),
 }
 
-_registered_algorithms = {}
+
+_registered_algorithms: Dict[str, _FIELDS_T] = {}
 
 
 class AlgorithmNotFoundError(Exception):
@@ -112,7 +117,7 @@ class AlgorithmNotFoundError(Exception):
     """
 
 
-def get_algorithm_params(name: str, include_check=False):
+def get_algorithm_params(name: str, include_check=False) -> Dict[str, _ALGPARAM_T]:
     """Obtain the parameters for a named CRC algorithm
     Optionally the 'check' field can be included, this field is not part of the
     definition of the algorithm and so is omitted by default
@@ -124,12 +129,12 @@ def get_algorithm_params(name: str, include_check=False):
     """
     raw_params = _lookup_named_params(name)
     final = None if include_check else -1
-    param_dict = dict(zip(_FIELDS[:final], raw_params[:final]))
+    param_dict: Dict[str, _ALGPARAM_T] = dict(zip(_FIELDS[:final], raw_params[:final]))
     param_dict["name"] = name
     return param_dict
 
 
-def _lookup_named_params(name: str) -> dict:
+def _lookup_named_params(name: str) -> _FIELDS_T:
     """Look up the defined raw parameters for algorithm `name`
     """
     try:
@@ -176,7 +181,7 @@ def algorithms_available() -> Iterable[str]:
 
 
 def register_algorithm(name: str, polynomial: int, width: int, seed: int, reflect_in: bool,
-                       reflect_out: bool,  xor_out: int, check: int = None) -> None:
+                       reflect_out: bool,  xor_out: int, check=None) -> None:
     """Register a CRC algorithm with custom parameters"""
     poly_mask = (1 << width) - 1
     _registered_algorithms[name] = (

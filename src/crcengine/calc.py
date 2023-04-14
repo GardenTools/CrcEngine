@@ -2,7 +2,7 @@
 """
 Implementation of CRC calculation in pure python
 """
-
+import typing
 # This file is part of CrcEngine, a python library for CRC calculation
 #
 # Copyright 2021 Garden Tools software
@@ -373,6 +373,7 @@ def new(name, calc_engine=_DEFAULT_ENGINE):
     return create_from_params(params, calc_engine)
 
 
+@typing.no_type_check
 def table_crc(params: CrcParams):
     """Return a table-based CRC algorithm corresponding to `params`
     """
