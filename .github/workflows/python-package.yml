@@ -27,17 +27,15 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install prerequisites
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pytest
-        if [ -f requirements.in ]; then pip install -r requirements.in flake8; else pip install flake8 ; fi
+        python -m pip install tox             
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        tox -e flakes
     - name: Test with tox & pytest
       run: |
         tox -e py -- --no-ceedling
@@ -54,6 +52,8 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install Poetry
+      uses: snok/install-poetry@v1        
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -61,9 +61,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         gem install ceedling
     - name: Run code-gen tests
       run: |
-        python setup.py develop
-        pytest -s -v tests/test_code_gen.py
+        poetry install --with dev
+        poetry run pytest -s -v tests/test_code_gen.py
