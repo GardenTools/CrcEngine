@@ -56,8 +56,10 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-.PHONY: clean clean-test clean-pyc clean-build
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+.PHONY: clean clean-test clean-pyc clean-build clean-all
+clean-all: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+
+clean: clean-build
 
 clean-build: ## remove build artifacts
 	rm -rf build/
@@ -86,15 +88,6 @@ test: ## run tests quickly with the default Python
 test-all: ## run tests on every Python version with tox
 	tox
 
-# Use make -B testenv to force an update
-testenv: requirements.txt ## Build test virtualenv
-	echo $@
-	$(SYS_PY3) -m venv testenv ; \
-	$(call FIX_WIN_VENV, $@) ; \
-	. $(TESTENV_BIN)/activate ; \
-	python -m pip install --upgrade pip; \
-	pip install -r requirements.txt
-
 .PHONY: coverage-text
 coverage-text: ## Run tests with coverage text output
 	pytest --cov=crcengine --cov-report term tests
@@ -115,14 +108,13 @@ release-test: dist ## package and upload a release
 	twine upload --repository testpypi dist/*
 
 .PHONY: dist
-dist: clean ## builds source and wheel package
+dist: clean-build ## builds source and wheel package
 	poetry build
 	ls -l dist
 
 .PHONY: install
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
-
+	poetry install
 
 # The sed command is needed because poetry seems to muddle the version marker,
 # if one dependency says it doesn't need a package at a specific version of
