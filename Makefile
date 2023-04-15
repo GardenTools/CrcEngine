@@ -124,6 +124,10 @@ install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
 
-docs/requirements.txt:
-	poetry export --format requirements.txt --only docs --without-hashes --output $@
+# The sed command is needed because poetry seems to muddle the version marker,
+# if one dependency says it doesn't need a package at a specific version of
+# python it sets the limit globally even when the package is specified as
+# required in project.toml
+docs/requirements.txt: poetry.lock Makefile
+	poetry export --format requirements.txt --only docs --without-hashes | sed 's/;.*//' > $@
 

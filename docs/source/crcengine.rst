@@ -14,22 +14,6 @@ Module contents
 Submodules
 **********
 
-crcengine.algorithms module
----------------------------
-
-.. automodule:: crcengine.algorithms
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-crcengine.calc module
----------------------
-
-.. automodule:: crcengine.calc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 crcengine.codegen module
 ------------------------
 
