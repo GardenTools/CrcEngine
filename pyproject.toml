@@ -33,8 +33,9 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python ="^3.7"
-importlib-metadata = ">=3.6"
 jinja2 = ">=2.7"
+# python 3.8 has importlib.metadata built-in
+importlib-metadata =  { version = ">=3.6", python = "<3.8" }
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "*" # TODO

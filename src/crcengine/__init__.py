@@ -18,7 +18,12 @@ Package exports
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-import importlib_metadata
+try:
+    # python 3.8 onwards
+    from importlib import metadata as importlib_metadata
+except ImportError:
+    # python 3.7 support
+    import importlib_metadata
 
 __version__ = importlib_metadata.version('crcengine')
 
