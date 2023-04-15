@@ -38,14 +38,15 @@ jinja2 = ">=2.7"
 importlib-metadata =  { version = ">=3.6", python = "<3.8" }
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "*" # TODO
+flake8 = ">=3.0"
 pylint = ">=2.0"
 pytest = ">=3.0.0"
 pytest-cov = "*"
+tox = ">=3.4"
 twine  = "*" # not sure this is still needed
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^5.3" # TODO check this
+sphinx = "^5.0"
 
 [tool.poetry.scripts]
 crcengine = "crcengine.__main__:main"
