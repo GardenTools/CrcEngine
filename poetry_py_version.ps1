@@ -6,8 +6,8 @@
 # poetry shell makes a new shell in the specified environment
 
 # This script is ineffective if the config setting 
-virtualenvs.in-project = null and .venv exists or
-virtualenvs.in-project = true (in which case .venv is always used)
+# virtualenvs.in-project = null and .venv exists or
+# virtualenvs.in-project = true (in which case .venv is always used)
 
 param ($py_version = $(throw "Python version parameter is required."))
 

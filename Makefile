@@ -116,19 +116,14 @@ release-test: dist ## package and upload a release
 
 .PHONY: dist
 dist: clean ## builds source and wheel package
-	python -m build
+	poetry build
 	ls -l dist
 
 .PHONY: install
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
-UPDATE_REQS=pip-compile -q -U --resolver=backtracking --output-file=requirements.txt requirements.in
 
-.PHONY: update-deps
-update-deps: ## Update dependencies in requirements.txt
-	$(PYTHON) -m pip install --upgrade pip
-	$(call UPDATE_REQS)
+docs/requirements.txt:
+	poetry export --format requirements.txt --only docs --without-hashes --output $@
 
-requirements.txt: requirements.in
-	$(call UPDATE_REQS)
