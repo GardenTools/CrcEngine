@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/crcengine.svg
         :target: https://pypi.python.org/pypi/crcengine
 
-..  image:: https://img.shields.io/github/workflow/status/GardenTools/CrcEngine/Python%20package/master
+..  image:: https://img.shields.io/github/actions/workflow/status/GardenTools/CrcEngine/python-package.yml
         :target: https://github.com/GardenTools/CrcEngine/actions?query=branch%3Amaster
 
 .. image:: https://img.shields.io/pypi/pyversions/CrcEngine.svg
