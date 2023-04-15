@@ -21,14 +21,18 @@ import sys
 import pytest
 
 import crcengine
+from crcengine import CrcParams
 
 C_TEST_HOME = join(os.path.dirname(__file__), "c_tests")
 
 
 @pytest.fixture(autouse=True)
 def _generate_algorithms():
-    crcengine.register_algorithm("myreverse8", polynomial=0x07, width=8, seed=0x55,
-                                 reflect_in=True, reflect_out=True, xor_out=0, check=0x80)
+    crcengine.register_algorithm(
+        "myreverse8", CrcParams(polynomial=0x07, width=8, seed=0x55,
+                                          reflect_in=True, reflect_out=True,
+                                          xor_out=0), check=0x80
+    )
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating code for", alg)
@@ -40,8 +44,9 @@ def generate_tests():
     in so that the introduction of a regression in enumeration of algorithms
     (for example) won't affect the tests run unless they are explicitly
      regenerated"""
-    crcengine.register_algorithm("myreverse8", polynomial=0x07, width=8, seed=0x55,
-                                 reflect_in=True, reflect_out=True, xor_out=0, check=0x80)
+    crcengine.register_algorithm(
+        "myreverse8", CrcParams(polynomial=0x07, width=8, seed=0x55,
+                                 reflect_in=True, reflect_out=True, xor_out=0), check=0x80)
     algorithms = crcengine.algorithms_available()
     for alg in algorithms:
         print("Generating tests for", alg)

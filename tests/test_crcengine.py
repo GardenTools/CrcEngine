@@ -13,14 +13,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
-import dataclasses
 import struct
 
 import pytest
 
 import crcengine
-from crcengine import algorithms
-from crcengine import get_algorithm_params, bit_reverse_n
+from crcengine import *
+
 
 # pylint: disable=missing-function-docstring,redefined-outer-name
 _CRC32_POLY = get_algorithm_params("crc32")["poly"]
@@ -75,10 +74,10 @@ def test_crc8_autosar():
 
 
 def test_crc8_bluetooth():
-    params = algorithms.lookup_params("crc8-bluetooth")
+    params = lookup_params("crc8-bluetooth")
     crc8 = crcengine.new("crc8-bluetooth")
-    generic_crc = crcengine.create_generic(*dataclasses.astuple(params))
-    assert generic_crc(b"123456789") == 0x26
+    generic = crcengine.generic_crc(params)
+    assert generic(b"123456789") == 0x26
     assert crc8(b"123456789") == 0x26
 
 
@@ -95,7 +94,7 @@ def test_crc32_generic_lsb():
     poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
     crc32_generic = crcengine.calc.generic_lsb_first(
-        poly, 32, _U32_MAX, ref_in=False, ref_out=False, xor_out=_U32_MAX
+        poly, 32, _U32_MAX, xor_out=_U32_MAX
     )
     assert crc32_generic.calculate(b"A") == 0xD3D99E8B
     assert crc32_generic.calculate(b"123456789") == 0xCBF43926
@@ -229,7 +228,7 @@ def test_generic_check(algorithm_name):
 
 
 def test_custom_algorithm():
-    crcengine.register_algorithm("mycrc8", 0xFFD5, 8, seed=0, reflect_in=False, reflect_out=False, xor_out=0, check=0xFFBC)
+    crcengine.register_algorithm("mycrc8", CrcParams(0xFFD5, 8, seed=0, reflect_in=False, reflect_out=False, xor_out=0), check=0xFFBC)
     assert "mycrc8" in crcengine.algorithms_available()
     params = crcengine.get_algorithm_params("mycrc8")
     assert params["poly"] == 0xD5
@@ -245,18 +244,16 @@ def test_bug_325():
     data2 = b'123456789'
     seed = 0x55
     expected_result1 = 0xb0
-    my_crc_algorithm = crcengine.create(poly=0x07,
-                                        width=8,
-                                        seed=seed,
-                                        ref_in=True,
-                                        ref_out=False,
-                                        xor_out=0x0)
-    eng_gen = crcengine.create_generic(poly=0x07,
-                                       width=8,
-                                       seed=seed,
-                                       ref_in=True,
-                                       ref_out=False,
-                                       xor_out=0x0)
+    params = crcengine.CrcParams(
+        polynomial=0x07,
+        width=8,
+        seed=seed,
+        reflect_in=True,
+        reflect_out=False,
+        xor_out=0x0
+    )
+    my_crc_algorithm = crcengine.create(params)
+    eng_gen = crcengine.generic_crc(params)
     assert my_crc_algorithm(data) == expected_result1
     assert eng_gen.calculate(data) == expected_result1
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
@@ -266,19 +263,14 @@ def test_bug_325_2():
     data = bytes([0X20])
     data2 = b'123456789'
     seed = 0x3017
-    my_crc_algorithm = crcengine.create(poly=0x07,
-                                        width=16,
-                                        seed=seed,
-                                        ref_in=True,
-                                        ref_out=False,
-                                        xor_out=0x0)
-
-    eng_gen = crcengine.create_generic(poly=0x07,
-                                       width=16,
-                                       seed=seed,
-                                       ref_in=True,
-                                       ref_out=False,
-                                       xor_out=0x0)
+    params = CrcParams(polynomial=0x07,
+                       width=16,
+                       seed=seed,
+                       reflect_in=True,
+                       reflect_out=False,
+                       xor_out=0x0)
+    my_crc_algorithm = crcengine.create(params)
+    eng_gen = crcengine.generic_crc(params)
     assert my_crc_algorithm(data) == eng_gen.calculate(data)
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
 
@@ -286,18 +278,14 @@ def test_bug_325_2():
 def test_bug_325_3():
     seed = 0x55
     data = b"123456789"
-    my_crc_algorithm = crcengine.create(poly=0x07,
-                                        width=8,
-                                        seed=seed,
-                                        ref_in=True,
-                                        ref_out=True,
-                                        xor_out=0x0)
-    eng_gen = crcengine.create_generic(poly=0x07,
-                                       width=8,
-                                       seed=seed,
-                                       ref_in=True,
-                                       ref_out=True,
-                                       xor_out=0x0)
+    params = CrcParams(polynomial=0x07,
+                       width=8,
+                       seed=seed,
+                       reflect_in=True,
+                       reflect_out=True,
+                       xor_out=0x0)
+    my_crc_algorithm = crcengine.create(params)
+    eng_gen = crcengine.generic_crc(params)
     # print(my_crc_algorithm(data))
     # print(eng_gen.calculate(data))
     assert 0x80 == eng_gen.calculate(data)

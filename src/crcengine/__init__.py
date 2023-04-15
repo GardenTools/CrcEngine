@@ -23,7 +23,7 @@ try:
     from importlib import metadata as importlib_metadata
 except ImportError:
     # python 3.7 support
-    import importlib_metadata
+    import importlib_metadata # type:ignore
 
 __version__ = importlib_metadata.version('crcengine')
 
@@ -41,10 +41,10 @@ from .calc import (
     bit_reverse_byte,
     bit_reverse_n,
     create,
-    create_from_params,
     create_generic,
     create_lsb_table,
     create_msb_table,
+    generic_crc,
     get_bits_max_value,
     new,
     table_crc,
@@ -61,10 +61,10 @@ __all__ = [
     "codegen",
     "CrcParams",
     "create",
-    "create_from_params",
     "create_generic",
     "create_lsb_table",
     "create_msb_table",
+    "generic_crc",
     "get_algorithm_params",
     "get_bits_max_value",
     "lookup_params",

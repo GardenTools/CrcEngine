@@ -19,8 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-from dataclasses import dataclass
-from typing import Dict, Iterable, Tuple, Union
+from typing import Dict, Iterable, NamedTuple, Tuple, Union
 # Some of these polynomials are used for many algorithms, so they are collected
 # here
 _CRC16_CCITT_POLY = 0x1021
@@ -31,14 +30,17 @@ _U16_MAX = (1 << 16) - 1
 _U32_MAX = (1 << 32) - 1
 
 # Static type definition helpers
-_FIELDS_T = Tuple[int, int, int, bool, bool, int, int]
-_ALGPARAM_T = Union[str, int, bool]
+_FieldsT = Tuple[int, int, int, bool, bool, int, int]
+_AlgParamType = Union[str, int, bool]
 
 _FIELDS = ("poly", "width", "seed", "ref_in", "ref_out", "xor_out", "check")
 
 
-@dataclass
-class CrcParams:
+class InvalidParametersError(Exception):
+    """Exception indicating specified CRC algorithm parameters are invalid"""
+
+
+class CrcParams(NamedTuple):
     """Basic parameters for specifying a CRC algorithm"""
     polynomial: int
     width: int
@@ -46,6 +48,18 @@ class CrcParams:
     reflect_in: bool
     reflect_out: bool
     xor_out: int
+
+    def validate(self) -> bool:
+        """raise an `InvalidParametersError` if the specified CRC parameters are
+        not mutually consistent"""
+        mask = (1 << self.width) - 1
+        if (
+                ((self.polynomial & mask) != self.polynomial)
+                or ((self.seed & mask) != self.seed)
+                or ((self.xor_out & mask) != self.xor_out)
+                or (self.polynomial & 1 == 0)
+        ):
+            raise InvalidParametersError(f"{self} are invalid CRC parameters")
 
 
 # All algorithms specified in this table have their polynomials specified with
@@ -109,7 +123,7 @@ _ALGORITHMS = {
 }
 
 
-_registered_algorithms: Dict[str, _FIELDS_T] = {}
+_registered_algorithms: Dict[str, _FieldsT] = {}
 
 
 class AlgorithmNotFoundError(Exception):
@@ -117,7 +131,7 @@ class AlgorithmNotFoundError(Exception):
     """
 
 
-def get_algorithm_params(name: str, include_check=False) -> Dict[str, _ALGPARAM_T]:
+def get_algorithm_params(name: str, include_check=False) -> Dict[str, _AlgParamType]:
     """Obtain the parameters for a named CRC algorithm
     Optionally the 'check' field can be included, this field is not part of the
     definition of the algorithm and so is omitted by default
@@ -129,12 +143,12 @@ def get_algorithm_params(name: str, include_check=False) -> Dict[str, _ALGPARAM_
     """
     raw_params = _lookup_named_params(name)
     final = None if include_check else -1
-    param_dict: Dict[str, _ALGPARAM_T] = dict(zip(_FIELDS[:final], raw_params[:final]))
+    param_dict: Dict[str, _AlgParamType] = dict(zip(_FIELDS[:final], raw_params[:final]))
     param_dict["name"] = name
     return param_dict
 
 
-def _lookup_named_params(name: str) -> _FIELDS_T:
+def _lookup_named_params(name: str) -> _FieldsT:
     """Look up the defined raw parameters for algorithm `name`
     """
     try:
@@ -180,17 +194,16 @@ def algorithms_available() -> Iterable[str]:
     yield from _registered_algorithms.keys()
 
 
-def register_algorithm(name: str, polynomial: int, width: int, seed: int, reflect_in: bool,
-                       reflect_out: bool,  xor_out: int, check=None) -> None:
+def register_algorithm(name: str, params: CrcParams, check=None) -> None:
     """Register a CRC algorithm with custom parameters"""
-    poly_mask = (1 << width) - 1
+    poly_mask = (1 << params.width) - 1
     _registered_algorithms[name] = (
-        polynomial & poly_mask,
-        width,
-        seed & poly_mask,
-        reflect_in,
-        reflect_out,
-        xor_out & poly_mask,
+        params.polynomial & poly_mask,
+        params.width,
+        params.seed & poly_mask,
+        params.reflect_in,
+        params.reflect_out,
+        params.xor_out & poly_mask,
         check,
     )
 

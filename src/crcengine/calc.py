@@ -21,6 +21,7 @@ import typing
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
 from typing import Iterable
+import warnings
 
 from .algorithms import CrcParams, lookup_params
 
@@ -126,8 +127,7 @@ class _CrcGeneric:
     unusual (and probably not useful) combinations of parameters such as
     reflecting the input without reflecting the output
     """
-    def __init__(self, poly: int, width: int, seed: int, ref_in: bool, ref_out: bool, xor_out=0,
-                 name=""):
+    def __init__(self, params: CrcParams, name=""):
         """
 
         :param poly: polynomial representation, has implicit leading 1 bit
@@ -138,30 +138,30 @@ class _CrcGeneric:
         :param xor_out:
         :param name:
         """
-        self._poly = poly
-        self._width = width
-        self._default_seed = seed
-        self._xor_out = xor_out
-        self._result_mask = (1 << width) - 1
+        self._poly = params.polynomial
+        self._width = params.width
+        self._default_seed = params.seed
+        self._xor_out = params.xor_out
+        self._result_mask = (1 << params.width) - 1
 
         # If the width is less than 8 bits, the CRC poly needs
         # to be shifted to meet the most significant bit. This allows whole
         # bytes to be loaded into the calculation, even though the result is
         # less than 8 bits wide
-        if width < 8:
-            self._crc_lshift = 8 - width
+        if params.width < 8:
+            self._crc_lshift = 8 - params.width
             self._msb_lshift = 0
         else:
-            self._msb_lshift = width - 8
+            self._msb_lshift = params.width - 8
             self._crc_lshift = 0
         # Bit mask that can be used to test whether the most significant bit
         # of the intermediate CRC is set
-        self._msbit_mask = 1 << (width + self._crc_lshift - 1)
+        self._msbit_mask = 1 << (params.width + self._crc_lshift - 1)
         # Mask that can be used to remove bits shifted off the left hand edge
         # of the calculation register
-        self._crc_mask = (1 << (width + self._crc_lshift)) - 1
-        self._ref_in = ref_in
-        self._ref_out = ref_out
+        self._crc_mask = (1 << (params.width + self._crc_lshift)) - 1
+        self._ref_in = params.reflect_in
+        self._ref_out = params.reflect_out
         self.name = name
 
     def calculate(self, data, seed=None):
@@ -318,7 +318,7 @@ class _GenericLsbfCrc:
     """General purpose CRC calculation using LSB algorithm. Mainly here for
     reference, since the other algorithms cover all useful calculation combinations
     """
-
+    # pylint: disable=too-many-arguments
     def __init__(self, lsb_poly, width, lsb_seed, ref_in, ref_out, xor_out, name=""):
         self._poly = lsb_poly
         self._width = width
@@ -365,12 +365,14 @@ class _GenericLsbfCrc:
         return self.calculate(data)
 
 
-def new(name, calc_engine=_DEFAULT_ENGINE):
+def new(name: str, calc_engine=_DEFAULT_ENGINE):
     """Create a new CRC calculation instance"""
     params = lookup_params(name)
     # the check field is not part of the definition, remove it before
     # creating the algorithm
-    return create_from_params(params, calc_engine)
+    algorithm = create(params, calc_engine)
+    algorithm.name = name
+    return algorithm
 
 
 @typing.no_type_check
@@ -390,25 +392,7 @@ def table_crc(params: CrcParams):
     return algorithm
 
 
-def create(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
-           xor_out: int, calc_engine="table"):
-    """Create a table-driven CRC calculation engine
-
-    :param poly: polynomial binary representation
-    :param width: polynomial width in bits
-    :param seed: seed value for the CRC calculation to use
-    :param ref_in:  reflect input bits
-    :param ref_out: reflect output bits
-    :param xor_out:  exclusive-or the output with this value
-    :return:
-    """
-    creator_fun = _CREATOR_FUNCS[calc_engine]
-    params = CrcParams(poly, width, seed, ref_in, ref_out, xor_out)
-    algorithm = creator_fun(params)
-    return algorithm
-
-
-def create_from_params(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
+def create(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
     """Create a CRC calculation algorithm instance based on `params` using
     calculation engine `calc_engine` as the back end
 
@@ -416,6 +400,7 @@ def create_from_params(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
     :param calc_engine:
     :return:
     """
+    params.validate()
     creator_fun = _CREATOR_FUNCS[calc_engine]
     return creator_fun(params)
 
@@ -433,9 +418,18 @@ def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool
     :param xor_out: pattern to XOR into result
     :return: A CRC calculation engine
     """
-    return _CrcGeneric(
-        poly, width, seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
-    )
+    warnings.warn("Use generic_crc instead of create_generic", DeprecationWarning)
+    params = CrcParams(poly, width, seed, ref_in, ref_out, xor_out)
+    return _CrcGeneric(params)
+
+
+def generic_crc(params: CrcParams):
+    """Return a general-purpose MSB-first CRC algorithm
+
+    :param params: CRC algorithm parameters
+    :return: CRC algorithm
+    """
+    return _CrcGeneric(params)
 
 
 def windowed_crc(params: CrcParams):
@@ -447,15 +441,13 @@ def windowed_crc(params: CrcParams):
     return _WindowedCrc(params)
 
 
-def generic_lsb_first(
-        lsb_poly, width, lsb_seed, ref_in=False, ref_out=False, xor_out=0xFFFFFF, name=""
-):
+def generic_lsb_first(lsb_poly, width, lsb_seed, xor_out=0xFFFFFF):
     """Create a CRC calculation engine that uses the Least-significant first
     algorithm, but does not reflect the polynomial or seed value. If you use
-    this, reflect the polynomial before passing it in"""
+    this, reflect the polynomial before passing it in
+    """
     return _GenericLsbfCrc(
-        lsb_poly, width, lsb_seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
-    )
+        lsb_poly, width, lsb_seed, ref_in=False, ref_out=False, xor_out=xor_out)
 
 
 def create_msb_table_individual(poly, width):

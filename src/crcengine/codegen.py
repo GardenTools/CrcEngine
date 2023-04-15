@@ -37,17 +37,17 @@ _GenFile = namedtuple("_GenFile", ["template", "output"])
 
 
 def generate_code(
-    crc_params, output_dir="out/", language="C", seed_parameter=False, func_name=None
+    crc_name_params, output_dir="out/", language="C", seed_parameter=False, func_name=None
 ):
     """Generate code implementing a specific CRC. Currently only language=C is
     supported"""
-    if isinstance(crc_params, str):
+    if isinstance(crc_name_params, str):
         # crc_params is an algorithm name, so replace it with the parameters
-        crc_params = get_algorithm_params(crc_params)
+        crc_name_params = get_algorithm_params(crc_name_params)
 
     env = _get_jinja_environment()
     template_params = _get_template_params(
-        crc_params, output_dir, seed_parameter, func_name, language
+        crc_name_params, output_dir, seed_parameter, func_name, language
     )
     _generate_output_files(env, template_params)
 
