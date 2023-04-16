@@ -1,6 +1,13 @@
 =======
 History
 =======
+0.4
+------------------
+* Feature: Introduction of CrcParams type to parametrize CRC implementation functions.
+* Feature: Addition of "window" CRC calculation accepting bit start and end positions
+* Bugfix: Fix CRC polynomials under 8 bits wide resulting in an invalid shift and resulting Exception
+* Deprecation: passing separate polynomial with and seed is deprecated, passing CrcParams should be used instead.
+* Switch to using poetry for packaging instead of setuptools.
 
 0.3.3 (2022-06-26)
 ------------------
