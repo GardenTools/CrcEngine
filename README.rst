@@ -71,9 +71,16 @@ Defining an algorithm
 .. code-block:: python
 
   import crcengine
-  crc_openpgp = crcengine.create(0x864cfb, 24, 0xb704ce, ref_in=False,
-                                 ref_out=False, xor_out=0,
-                                 name='crc-24-openpgp')
+  params = crcengine.CrcParams(0x864cfb, 24, 0xb704ce, reflect_in=False, reflect_out=False, xor_out=0)
+  crc_openpgp = crcengine.create_from_params(params)
+  # this is equivalent to
+  crc_openpgp = crcengine.create(params=params)
+  # invocation
+  result = crc_openpgp(b'123456789')
+  print(f'CRC=0x{result:08x}')
+
+When using create() `params` must be passed as a keyword parameter, since the function also accepts polynomial and seed
+parameters for backwards compatibility.
 
 Code Generation
 ---------------
