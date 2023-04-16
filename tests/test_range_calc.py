@@ -3,6 +3,7 @@ import crcengine
 from crcengine.calc import _calc_end_mask
 from crcengine import algorithms as alg
 
+
 def test_end_bit_mask():
     """ Test calculation of final bit mask, counting MSbit first
     """

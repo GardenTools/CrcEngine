@@ -49,7 +49,7 @@ class CrcParams(NamedTuple):
     reflect_out: bool
     xor_out: int
 
-    def validate(self) -> bool:
+    def validate(self) -> None:
         """raise an `InvalidParametersError` if the specified CRC parameters are
         not mutually consistent"""
         mask = (1 << self.width) - 1
@@ -194,7 +194,21 @@ def algorithms_available() -> Iterable[str]:
     yield from _registered_algorithms.keys()
 
 
-def register_algorithm(name: str, params: CrcParams, check=None) -> None:
+def register_algorithm(name, polynomial, width, seed, reflect, xor_out, check=0):
+    """Register a CRC algorithm with custom parameters"""
+    poly_mask = (1 << width) - 1
+    _registered_algorithms[name] = (
+        polynomial & poly_mask,
+        width,
+        seed & poly_mask,
+        reflect,
+        reflect,
+        xor_out & poly_mask,
+        check,
+    )
+
+
+def register_algorithm_params(name: str, params: CrcParams, check=None) -> None:
     """Register a CRC algorithm with custom parameters"""
     poly_mask = (1 << params.width) - 1
     _registered_algorithms[name] = (

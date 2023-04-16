@@ -20,10 +20,10 @@ Package exports
 
 try:
     # python 3.8 onwards
-    from importlib import metadata as importlib_metadata
+    from importlib import metadata as importlib_metadata  # type:ignore
 except ImportError:
     # python 3.7 support
-    import importlib_metadata # type:ignore
+    import importlib_metadata  # type:ignore
 
 __version__ = importlib_metadata.version('crcengine')
 
@@ -34,6 +34,7 @@ from .algorithms import (
     get_algorithm_params,
     lookup_params,
     register_algorithm,
+    register_algorithm_params,
     unregister_algorithm,
 )
 from .calc import (
@@ -41,6 +42,7 @@ from .calc import (
     bit_reverse_byte,
     bit_reverse_n,
     create,
+    create_from_params,
     create_generic,
     create_lsb_table,
     create_msb_table,
@@ -50,7 +52,11 @@ from .calc import (
     table_crc,
 )
 
-from .import codegen
+from .codegen import (
+    generate_code,
+    generate_test
+)
+
 
 __all__ = [
     "AlgorithmNotFoundError",
@@ -61,15 +67,19 @@ __all__ = [
     "codegen",
     "CrcParams",
     "create",
+    "create_from_params",
     "create_generic",
     "create_lsb_table",
     "create_msb_table",
     "generic_crc",
+    "generate_code",
+    "generate_test",
     "get_algorithm_params",
     "get_bits_max_value",
     "lookup_params",
     "new",
     "register_algorithm",
+    "register_algorithm_params",
     "table_crc",
     "unregister_algorithm",
 ]

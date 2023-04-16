@@ -20,7 +20,7 @@ import typing
 # You should have received a copy of the GNU General Public License
 # along with crcengine.  If not, see <https://www.gnu.org/licenses/>.
 
-from typing import Iterable
+from typing import Iterable, Optional
 import warnings
 
 from .algorithms import CrcParams, lookup_params
@@ -130,13 +130,6 @@ class _CrcGeneric:
     def __init__(self, params: CrcParams, name=""):
         """
 
-        :param poly: polynomial representation, has implicit leading 1 bit
-        :param width:
-        :param seed:
-        :param ref_in:
-        :param ref_out:
-        :param xor_out:
-        :param name:
         """
         self._poly = params.polynomial
         self._width = params.width
@@ -314,15 +307,15 @@ class _WindowedCrc:
         return self.calculate(data)
 
 
-class _GenericLsbfCrc:
+class _GenericReflectingLsbCrc:
     """General purpose CRC calculation using LSB algorithm. Mainly here for
     reference, since the other algorithms cover all useful calculation combinations
     """
     # pylint: disable=too-many-arguments
-    def __init__(self, lsb_poly, width, lsb_seed, ref_in, ref_out, xor_out, name=""):
-        self._poly = lsb_poly
+    def __init__(self, polynomial, width, seed, ref_in, ref_out, xor_out, name=""):
+        self._poly = polynomial
         self._width = width
-        self._seed = lsb_seed
+        self._seed = seed
         self._xor_out = xor_out
         self._result_mask = (1 << width) - 1
         self._msbit = 1 << (width - 1)
@@ -338,10 +331,8 @@ class _GenericLsbfCrc:
         :param seed: Optional seed
         :return: calculated CRC
         """
-        if seed is not None:
-            crc = seed
-        else:
-            crc = self._seed
+        crc = seed if seed is not None else self._seed
+
         if self._ref_in:
             poly = bit_reverse_n(self._poly, self._width)
         else:
@@ -370,7 +361,7 @@ def new(name: str, calc_engine=_DEFAULT_ENGINE):
     params = lookup_params(name)
     # the check field is not part of the definition, remove it before
     # creating the algorithm
-    algorithm = create(params, calc_engine)
+    algorithm = create_from_params(params, calc_engine)
     algorithm.name = name
     return algorithm
 
@@ -392,7 +383,7 @@ def table_crc(params: CrcParams):
     return algorithm
 
 
-def create(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
+def create_from_params(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
     """Create a CRC calculation algorithm instance based on `params` using
     calculation engine `calc_engine` as the back end
 
@@ -403,6 +394,49 @@ def create(params: CrcParams, calc_engine=_DEFAULT_ENGINE):
     params.validate()
     creator_fun = _CREATOR_FUNCS[calc_engine]
     return creator_fun(params)
+
+
+def create(poly=None, width=None, seed=None,  # pylint: disable=too-many-arguments
+        ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF, params: Optional[CrcParams] = None,
+        calc_engine=_DEFAULT_ENGINE):
+    """Create a table-driven CRC calculation engine
+
+    :param poly: polynomial (deprecated)
+    :param width: polynomial width in bits (deprecated)
+    :param seed: seed value for the CRC calculation to use (deprecated)
+    :param ref_in:  reflect input bits (deprecated)
+    :param ref_out: reflect output bits (deprecated)
+    :param name: associate a name with this algorithm (deprecated)
+    :param xor_out:  exclusive-or the output with this value (deprecated)
+    :param params: CRC parameters, same as specifying individual parameters
+    :param calc_engine: back-end calculation engine to use
+    :return:
+    """
+    if (params is not None) and (poly is None) and (width is None) and (seed is None):
+        if not isinstance(params, CrcParams):
+            raise ValueError("create: `params` must be a CrcParams")
+        return create_from_params(params, calc_engine)
+    if (params is None) and (poly is not None) and (width is not None) and (seed is not None):
+        warnings.warn("Passing separate parameters for poly, width and seed is"
+                      " deprecated, pass CrcParams instead", DeprecationWarning)
+        return _create_old(int(poly), int(width), int(seed), bool(ref_in), bool(ref_out), name,
+                           xor_out)
+    raise ValueError(f"Must specify either `params` ({params})"
+                     f" or `poly` ({poly}), `width` ({width}) and `seed` ({seed})")
+
+
+def _create_old(poly, width, seed, ref_in, ref_out, name, xor_out, ):
+    if ref_in:
+        table = create_lsb_table(poly, width)
+        algorithm = _ReflectedTableCrc(
+            table, width, seed, reverse_result=(ref_in != ref_out), xor_out=xor_out, name=name,
+        )
+    else:
+        table = create_msb_table(poly, width)
+        algorithm = _CrcMsbfTable(
+            table, width, seed, reverse_result=ref_out, xor_out=xor_out, name=name
+        )
+    return algorithm
 
 
 def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool,
@@ -420,7 +454,7 @@ def create_generic(poly: int, width: int, seed: int, ref_in: bool, ref_out: bool
     """
     warnings.warn("Use generic_crc instead of create_generic", DeprecationWarning)
     params = CrcParams(poly, width, seed, ref_in, ref_out, xor_out)
-    return _CrcGeneric(params)
+    return _CrcGeneric(params, name)
 
 
 def generic_crc(params: CrcParams):
@@ -441,13 +475,26 @@ def windowed_crc(params: CrcParams):
     return _WindowedCrc(params)
 
 
-def generic_lsb_first(lsb_poly, width, lsb_seed, xor_out=0xFFFFFF):
+def create_generic_lsbf(
+    poly, width, seed, ref_in=True, ref_out=True, name="", xor_out=0xFFFFFF
+):
     """Create a CRC calculation engine that uses the Least-significant first
-    algorithm, but does not reflect the polynomial or seed value. If you use
-    this, reflect the polynomial before passing it in
-    """
-    return _GenericLsbfCrc(
-        lsb_poly, width, lsb_seed, ref_in=False, ref_out=False, xor_out=xor_out)
+    algorithm, but does not reflect the polynomial. If you use this, reflect
+    the polynomial before passing it in"""
+    return _GenericReflectingLsbCrc(
+        poly, width, seed, ref_in=ref_in, ref_out=ref_out, xor_out=xor_out, name=name
+    )
+
+
+def _create_reflecting_lsbf(params: CrcParams):
+    return _GenericReflectingLsbCrc(
+        params.polynomial,
+        params.width,
+        params.seed,
+        params.reflect_in,
+        params.reflect_out,
+        params.xor_out
+    )
 
 
 def create_msb_table_individual(poly, width):
@@ -473,9 +520,9 @@ def create_msb_table_individual(poly, width):
 
 _CREATOR_FUNCS = {
     "table": table_crc,
-    "generic": create_generic,
-    "generic_msbf": create_generic,
-    "generic_lsbf": generic_lsb_first,
+    "generic": generic_crc,
+    "generic_msbf": generic_crc,
+    "generic_lsbf": _create_reflecting_lsbf,
     "windowed": windowed_crc,
 }
 

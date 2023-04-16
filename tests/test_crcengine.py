@@ -93,8 +93,8 @@ def test_crc32_generic():
 def test_crc32_generic_lsb():
     poly = crcengine.bit_reverse_n(_CRC32_POLY, 32)
     assert poly == 0xEDB88320
-    crc32_generic = crcengine.calc.generic_lsb_first(
-        poly, 32, _U32_MAX, xor_out=_U32_MAX
+    crc32_generic = crcengine.calc.create_generic_lsbf(
+        poly, 32, _U32_MAX, ref_in=False, ref_out=False, xor_out=_U32_MAX
     )
     assert crc32_generic.calculate(b"A") == 0xD3D99E8B
     assert crc32_generic.calculate(b"123456789") == 0xCBF43926
@@ -228,7 +228,21 @@ def test_generic_check(algorithm_name):
 
 
 def test_custom_algorithm():
-    crcengine.register_algorithm("mycrc8", CrcParams(0xFFD5, 8, seed=0, reflect_in=False, reflect_out=False, xor_out=0), check=0xFFBC)
+    crcengine.register_algorithm("mycrc8", 0xFFD5, 8, 0, False, 0, 0xFFBC)
+    assert "mycrc8" in crcengine.algorithms_available()
+    params = crcengine.get_algorithm_params("mycrc8")
+    assert params["poly"] == 0xD5
+    assert params["seed"] == 0
+    crcengine.unregister_algorithm("mycrc8")
+    assert "mycrc8" not in crcengine.algorithms_available()
+    with pytest.raises(crcengine.AlgorithmNotFoundError):
+        crcengine.get_algorithm_params("mycrc8")
+
+
+def test_custom_algorithm_params():
+    crcengine.register_algorithm_params("mycrc8",
+                                 CrcParams(0xFFD5, 8, seed=0, reflect_in=False, reflect_out=False,
+                                           xor_out=0), check=0xFFBC)
     assert "mycrc8" in crcengine.algorithms_available()
     params = crcengine.get_algorithm_params("mycrc8")
     assert params["poly"] == 0xD5
@@ -240,38 +254,48 @@ def test_custom_algorithm():
 
 
 def test_bug_325():
-    data = bytes([0x20])
+    data = bytes([0X20])
     data2 = b'123456789'
-    seed = 0x55
-    expected_result1 = 0xb0
-    params = crcengine.CrcParams(
-        polynomial=0x07,
-        width=8,
-        seed=seed,
-        reflect_in=True,
-        reflect_out=False,
-        xor_out=0x0
-    )
-    my_crc_algorithm = crcengine.create(params)
-    eng_gen = crcengine.generic_crc(params)
-    assert my_crc_algorithm(data) == expected_result1
-    assert eng_gen.calculate(data) == expected_result1
+    seed = 55
+    my_crc_algorithm = crcengine.create(poly=0x07,
+                                        width=8,
+                                        seed=seed,
+                                        ref_in=1,
+                                        ref_out=0,
+                                        name="test",
+                                        xor_out=0x0)
+
+    eng_gen = crcengine.create_generic(poly=0x07,
+                                       width=8,
+                                       seed=seed,
+                                       ref_in=1,
+                                       ref_out=0,
+                                       name="test_gen",
+                                       xor_out=0x0)
+    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
 
 
 def test_bug_325_2():
     data = bytes([0X20])
     data2 = b'123456789'
-    seed = 0x3017
-    params = CrcParams(polynomial=0x07,
-                       width=16,
-                       seed=seed,
-                       reflect_in=True,
-                       reflect_out=False,
-                       xor_out=0x0)
-    my_crc_algorithm = crcengine.create(params)
-    eng_gen = crcengine.generic_crc(params)
-    assert my_crc_algorithm(data) == eng_gen.calculate(data)
+    seed = 0x3003
+    my_crc_algorithm = crcengine.create(poly=0x07,
+                                        width=16,
+                                        seed=seed,
+                                        ref_in=1,
+                                        ref_out=0,
+                                        name="test",
+                                        xor_out=0x0)
+
+    eng_gen = crcengine.create_generic(poly=0x07,
+                                       width=16,
+                                       seed=seed,
+                                       ref_in=1,
+                                       ref_out=0,
+                                       name="test_gen",
+                                       xor_out=0x0)
+    assert my_crc_algorithm(data) ==  eng_gen.calculate(data)
     assert my_crc_algorithm(data2) == eng_gen.calculate(data2)
 
 
@@ -284,10 +308,23 @@ def test_bug_325_3():
                        reflect_in=True,
                        reflect_out=True,
                        xor_out=0x0)
-    my_crc_algorithm = crcengine.create(params)
+    my_crc_algorithm = crcengine.create(params=params)
     eng_gen = crcengine.generic_crc(params)
     # print(my_crc_algorithm(data))
     # print(eng_gen.calculate(data))
     assert 0x80 == eng_gen.calculate(data)
     assert 0x80 == my_crc_algorithm(data)
     assert my_crc_algorithm(data) == eng_gen.calculate(data)
+
+
+def test_available_engines():
+    engines = available_calculation_engines()
+    assert "table" in engines
+    assert "generic" in engines
+    assert "generic_msbf" in engines
+    assert "generic_lsbf" in engines
+    assert "windowed" in engines
+
+    params = lookup_params("crc16-xmodem")
+    for engine in engines:
+        create_from_params(params, engine)
