@@ -13,6 +13,9 @@ on:
 
   pull_request:
     types: [assigned, opened, synchronize, reopened]
+    
+  schedule:
+    - cron: "15 03 * * 6"      
 
 jobs:
   test:
